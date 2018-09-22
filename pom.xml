@@ -23,7 +23,9 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
         <spring-boot-admin.version>2.1.0-SNAPSHOT</spring-boot-admin.version>
+        <itext.version>7.1.2</itext.version>
     </properties>
+
 
     <dependencies>
         <dependency>
@@ -67,6 +69,41 @@
             <artifactId>jackson-dataformat-yaml</artifactId>
             <version>2.9.6</version>
             <type>bundle</type>
+        </dependency>
+        <!-- always needed -->
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>kernel</artifactId>
+            <version>${itext.version}</version>
+        </dependency>
+
+        <!-- always needed -->
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>io</artifactId>
+            <version>${itext.version}</version>
+        </dependency>
+
+        <!-- always needed -->
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>layout</artifactId>
+            <version>${itext.version}</version>
+        </dependency>
+
+        <!-- only needed for barcodes -->
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>barcodes</artifactId>
+            <version>${itext.version}</version>
+        </dependency>
+
+
+        <!-- only needed for hyphenation -->
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>hyph</artifactId>
+            <version>${itext.version}</version>
         </dependency>
 
         <dependency>
