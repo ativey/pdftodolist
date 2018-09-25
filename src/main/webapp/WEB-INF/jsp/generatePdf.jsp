@@ -4,11 +4,9 @@
 <p>
     <a href="category">Category</a>
     <a href="generatePdf">PDF</a>
-    <a href="addTask">Add Task</a>
-    <a href="editTask">Edit Task</a>
 </p>
 
-<p>List of tasks</p>
+<h1>Generate PDF</h1>
 
 
 </html>
