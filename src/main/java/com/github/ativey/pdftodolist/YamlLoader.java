@@ -37,9 +37,12 @@ public class YamlLoader {
             Category category = new Category(key);
             List tasks = new ArrayList<Task>();
             ret.put(category, tasks);
-            for (String taskName : (List<String>) map.get(key)) {
-                Task task = new Task(taskName, category, true);
-                tasks.add(task);
+            var taskNames = (List<String>) map.get(key);
+            if (taskNames != null) {
+                for (String taskName : taskNames) {
+                    Task task = new Task(taskName, category, true);
+                    tasks.add(task);
+                }
             }
         }
         return ret;

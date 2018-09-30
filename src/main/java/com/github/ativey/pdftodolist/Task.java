@@ -20,4 +20,32 @@ public class Task {
 
     private boolean important;
 
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Task() {
+        // Deliberately empty
+    }
+
+    public Task(@Size(min = 1, max = 40) String name, Category category, boolean important) {
+        this.name = name;
+        this.category = category;
+        this.important = important;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }

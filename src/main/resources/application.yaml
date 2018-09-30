@@ -4,7 +4,7 @@ spring:
         view.suffix: .jsp
 
     datasource:
-        url: jdbc:mysql://localhost:3306/pdftodolist
+        url: jdbc:mysql://localhost:3306/pdftodolists?autoReconnect=true&useSSL=false
         username: work
         password: XXX
         # Keep the connection alive if idle for a long time (needed in production)

@@ -29,15 +29,15 @@ public class PdfTodLlistApplicationTests {
         try (InputStream istream = this.getClass().getResourceAsStream("/jobs1.yaml")) {
             categoryMap = yamlLoader.load(istream);
             assertThat(countCategories(categoryMap)).isEqualTo(4);
-            assertThat(countAllTasks(categoryMap)).isEqualTo(20);
-            assertThat(countTasksForCategory(categoryMap, "CategoryC")).isEqualTo(5);
+            assertThat(countAllTasks(categoryMap)).isEqualTo(17);
+            assertThat(countTasksForCategory(categoryMap, "CategoryC")).isEqualTo(3);
         }
 
         try (InputStream istream = this.getClass().getResourceAsStream("/jobs2.yaml")){
             categoryMap = yamlLoader.load(istream);
-            assertThat(countCategories(categoryMap)).isEqualTo(4);
-            assertThat(countAllTasks(categoryMap)).isEqualTo(20);
-            assertThat(countTasksForCategory(categoryMap, "CategoryC")).isEqualTo(5);
+            assertThat(countCategories(categoryMap)).isEqualTo(5);
+            assertThat(countAllTasks(categoryMap)).isEqualTo(16);
+            assertThat(countTasksForCategory(categoryMap, "CategoryC")).isEqualTo(4);
         }
     }
 
