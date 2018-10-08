@@ -1,4 +1,4 @@
-package com.github.ativey.pdftodolist.com.github.ativey.pdftolist.pdf;
+package com.github.ativey.pdftodolist.pdf;
 
 import com.itextpdf.kernel.colors.Color;
 import com.itextpdf.kernel.colors.DeviceRgb;
