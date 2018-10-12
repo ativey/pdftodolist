@@ -2,7 +2,6 @@ package com.github.ativey.pdftodolist.pdf;
 
 import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.colors.Color;
-import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.geom.PageSize;
@@ -10,11 +9,9 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfPage;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
-import com.itextpdf.layout.element.Paragraph;
 import org.springframework.data.util.Pair;
 import org.springframework.util.ReflectionUtils;
 
-import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -30,6 +27,15 @@ import static com.github.ativey.pdftodolist.pdf.PdfColor.*;
 // find . -path ./.git -prune -o -type f -name '*.java' -print0 | xargs -0 sed -i 's/core.simple.ParameterizedRowMapper/core.RowMapper/g'
 
 public class ToDoList {
+
+
+    final static double MM_TO_POINT = 2.83465;
+
+    public static final long checkBoxSize = mmToPoint(2.5f);
+    public static final long verySmallGap = mmToPoint(0.7);
+    public static final long smallGap = mmToPoint(1.0f);
+    public static final long widthOfBox = mmToPoint(6.0);
+    public static final long checkBoxLeftFromRightEdge = checkBoxSize + smallGap;
 
     // TODO Better font handling
     // TODO Change transform matrix so item 0 top left
@@ -48,12 +54,12 @@ public class ToDoList {
     public static final long page_x_border = mmToPoint(9.0);
     public static final long page_y_border = mmToPoint(9.0);
     public static final long width = mmToPoint(54.0);
-    public static final long height = mmToPoint(7.0); //20;
-    public static final long xOffset = mmToPoint(56.0); //xOffset= 160;
-    public static final long yOffset = mmToPoint(7.6); //yOffset = 24;
-    public static final long radius = mmToPoint(1.76); // 5;
+    public static final long height = mmToPoint(7.0);
+    public static final long xOffset = mmToPoint(56.0);
+    public static final long yOffset = mmToPoint(7.6);
+    public static final long radius = mmToPoint(1.76);
+    final double curv = 0.4477f;
 
-    final static double MM_TO_POINT = 2.83465;
 
     private static final long mmToPoint(double mm) {
         double point = mm * MM_TO_POINT;
@@ -171,7 +177,7 @@ public class ToDoList {
 
     void drawBox(PdfCanvas canvas, Color colour, double x, double y, boolean box, Optional<String> boxText, boolean checkbox, Optional<String> text, boolean complete, boolean important) throws IOException {
 
-        double effectiveStartX = x + mmToPoint(1.0);
+        double effectiveStartX = x + smallGap;
         double effectiveEndX = x + width;
 
         canvas.saveState();
@@ -180,15 +186,15 @@ public class ToDoList {
         canvas.roundRectangle(x, y, width, height, radius);
         canvas.stroke();
         if (box) {
-            drawBox(canvas, colour, x, x + mmToPoint(6.0), y, boxText, important);
-            effectiveStartX = x + mmToPoint(6.0 + 1.0);
+            drawBox(canvas, colour, x, x + widthOfBox, y, boxText, important);
+            effectiveStartX = x + widthOfBox + smallGap;
         }
         if (checkbox) {
-            drawCheckBox(canvas, colour, x + width - mmToPoint(4.0), y+(height / 2), complete);
+            drawCheckBox(canvas, colour, x + width - checkBoxLeftFromRightEdge, y+(height / 2), complete);
             effectiveEndX = x + width - mmToPoint(5.5);
         }
         if (text.isPresent()) {
-            drawText(canvas, colour, effectiveStartX, effectiveEndX, y, text.get(), 12, complete, important);
+            drawText(canvas, colour, effectiveStartX, effectiveEndX, y, text.get(), 10, complete, important);
         }
         canvas.restoreState();
     }
@@ -215,7 +221,7 @@ public class ToDoList {
     private void drawBox(PdfCanvas canvas, Color colour, double boxFarLeftX, double x, double y, Optional<String> boxText, boolean important) throws IOException {
         // FIXME Check join type
 
-        final double curv = 0.4477f;
+
         canvas
                 .moveTo(x - radius, y)
                 .curveTo(x - radius * curv, y, x, y + radius * curv, x, y + radius)
@@ -224,13 +230,13 @@ public class ToDoList {
         canvas.stroke();
 
         if (boxText.isPresent()){
-            drawText(canvas, colour, boxFarLeftX + mmToPoint(0.7), x, y, boxText.get(), 9, false, important);
+            drawText(canvas, colour, boxFarLeftX + verySmallGap, x, y, boxText.get(), 9, false, important);
         }
     }
 
     void drawCheckBox(PdfCanvas canvas, Color colour, double x, double y, boolean complete) {
-        float box = 7.0f;
-        canvas.roundRectangle(x - 2.0f, y-3.5f, box, box, radius/2);
+        float box = checkBoxSize;
+        canvas.roundRectangle(x, y-(checkBoxSize/2), box, box, radius/2);
         if (complete) {
             canvas.fillStroke();
         } else {
