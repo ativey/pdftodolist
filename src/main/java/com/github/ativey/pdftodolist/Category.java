@@ -15,12 +15,16 @@ public class Category {
     @Size(min = 1, max = 20)
     private String name;
 
+    @Column(unique = true)
+    private int display;
+
     public Category() {
         // Deliberately empty
     }
 
-    public Category(String name) {
+    public Category(String name, int display) {
         this.name = name;
+        this.display = display;
     }
 
     @Override
@@ -45,5 +49,13 @@ public class Category {
     @Override
     public int hashCode() {
         return Objects.hash(name);
+    }
+
+    public void setDisplay(int display) {
+        this.display = display;
+    }
+
+    public int getDisplay() {
+        return  display;
     }
 }

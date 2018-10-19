@@ -31,7 +31,7 @@ class MainTaskController {
 
     @GetMapping("/")
     public String index(ModelMap modelMap) {
-        List<Category> categories = categoryRepository.findAll();
+        List<Category> categories = categoryRepository.findAllByOrderByDisplayDesc();
         modelMap.addAttribute("categories", categories);
         List<Task> tasks = taskRepository.findAll();
         modelMap.addAttribute("tasks", tasks);
@@ -41,7 +41,8 @@ class MainTaskController {
 
     // Task
     @GetMapping("/addTask")
-    public String addTask() {
+    public String addTask(ModelMap modelMap) {
+        modelMap.addAttribute("categories", categoryRepository.findAllByOrderByDisplayDesc());
         return "addTask";
     }
 
