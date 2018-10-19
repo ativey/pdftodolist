@@ -1,5 +1,9 @@
 package com.github.ativey.pdftodolist.pdf;
 
+import com.github.ativey.pdftodolist.Category;
+import com.github.ativey.pdftodolist.CategoryRepository;
+import com.github.ativey.pdftodolist.Task;
+import com.github.ativey.pdftodolist.TaskRepository;
 import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.colors.Color;
 import com.itextpdf.kernel.font.PdfFont;
@@ -7,8 +11,10 @@ import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfPage;
+import com.itextpdf.kernel.pdf.PdfViewerPreferences;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.util.ReflectionUtils;
 
@@ -16,10 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 import static com.github.ativey.pdftodolist.pdf.PdfColor.*;
 
@@ -45,11 +48,7 @@ public class ToDoList {
 
     private static PdfFont boldFont;
 
-
-
-
-    public static final String DEST = "/home/work/Desktop/todo.pdf";
-
+    public static final String DEFAULT_DEST = "/home/work/Desktop/todo.pdf";
 
     public static final long page_x_border = mmToPoint(9.0);
     public static final long page_y_border = mmToPoint(9.0);
@@ -60,89 +59,65 @@ public class ToDoList {
     public static final long radius = mmToPoint(1.76);
     final double curv = 0.4477f;
 
+    @Autowired
+    private TaskRepository taskRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+private String destination;
+
 
     private static final long mmToPoint(double mm) {
         double point = mm * MM_TO_POINT;
         return (long) point;
     }
 
-    public static void main(String... args) throws IOException {
-
-        bodyFont = PdfFontFactory.createFont(StandardFonts.HELVETICA);
-        boldFont = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
-
-        ToDoList toDoList = new ToDoList();
-        toDoList.drawIt();
+    public ToDoList(String destination) {
+        this.destination = destination;
+        try {
+            bodyFont = PdfFontFactory.createFont(StandardFonts.HELVETICA);
+            boldFont = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
+        } catch (IOException exp) {
+            exp.printStackTrace();
+        }
     }
 
-    void drawIt() throws IOException {
+    public static void main(String... args) throws IOException {
+
+
+        ToDoList toDoList = new ToDoList(DEFAULT_DEST);
+        PdfDocument pdfDocument = toDoList.setup();
+
+        toDoList.drawRandom(pdfDocument);
+        pdfDocument.close();
+    }
+
+    public float transform(float y) {
+        return PageSize.A4.rotate().getTop() - y;
+    }
+
+
+    public PdfDocument setup() throws IOException {
 
         PdfDocument pdfDoc;
+
         try {
-            pdfDoc = new PdfDocument(new PdfWriter(DEST));
+            pdfDoc = new PdfDocument(new PdfWriter(destination));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            return;
+            return null;
         }
         PageSize pageSize = PageSize.A4.rotate();
         pdfDoc.setDefaultPageSize(pageSize);
 
+        PdfViewerPreferences viewerPreferences = new PdfViewerPreferences();
+        pdfDoc.getCatalog().setViewerPreferences(viewerPreferences);
+        viewerPreferences.setDuplex(PdfViewerPreferences.PdfViewerPreferencesConstants.DUPLEX_FLIP_LONG_EDGE);
 
-        drawCssColours(pdfDoc);
+        //drawFromDb(pdfDoc);
         //drawRandom(pdfDoc);
-
-
-        pdfDoc.close();
-
-    }
-
-
-    private void drawCssColours(PdfDocument pdfDoc) throws IOException {
-
-        var list = new ArrayList<Pair<PdfColor, String>>();
-
-        ReflectionUtils.doWithLocalFields(PdfColor.class, new ReflectionUtils.FieldCallback() {
-            @Override
-            public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
-                int modifiers = field.getModifiers();
-                if (!Modifier.isStatic(modifiers)) {
-                    return;
-                }
-                PdfColor colour = (PdfColor) field.get(PdfColor.class);
-                String description = String.format("#%s %s", colour.getHexString(), field.getName());
-                System.err.println(description);
-                list.add(Pair.of(colour, description));
-            }
-        });
-
-        Random random = new Random();
-
-        int count = 0;
-        for (int i = 0; i < 2; i++) {
-            final PdfPage page = pdfDoc.addNewPage();
-            PdfCanvas canvas = new PdfCanvas(page);
-            for (int x = 0; x < 5; x++) {
-                for (int y = 0; y < 26; y++) {
-                    float xPoints = x * xOffset + page_x_border;
-                    float yPoints = y * yOffset + page_y_border;
-                    if (count < list.size()) {
-                        drawBox(canvas,
-                                list.get(count).getFirst().getColour(),
-                                xPoints,
-                                yPoints,
-                                false,
-                                Optional.of(Integer.toString(count)),
-                                true,
-                                Optional.of(list.get(count).getSecond()),
-                                true,
-                                false);
-                    } else {
-                        drawBox(canvas, GRAY.getColour(), xPoints, yPoints, false, Optional.empty(), true, Optional.empty(), false, false);
-                    }
-                    count++;
-                }
-            }
-        }
+        return pdfDoc;
     }
 
     private void drawRandom(PdfDocument pdfDoc) throws IOException {
@@ -155,9 +130,9 @@ public class ToDoList {
             PdfCanvas canvas = new PdfCanvas(page);
             int count = 0;
             for (int x = 0; x < 5; x++) {
-                for (int y = 0; y < 26; y++) {
+                for (int y = 1; y < 27; y++) {
                     float xPoints = x * xOffset + page_x_border;
-                    float yPoints = y * yOffset + page_y_border;
+                    float yPoints = transform(y * yOffset + page_y_border);
                     drawBox(canvas,
                             colours.get(random.nextInt(colours.size() - 1)).getColour(),
                             xPoints,
@@ -168,6 +143,38 @@ public class ToDoList {
                             Optional.of(texts.get(count % texts.size())),
                             random.nextBoolean(),
                             random.nextBoolean());
+                    count++;
+                }
+            }
+        }
+    }
+
+    public void drawFromList(PdfDocument pdfDoc, List<Pair<PdfColor, ToDoItem>> listOfPairs) throws IOException {
+
+        int count = 0;
+        for (int i = 0; i < 2; i++) {
+            final PdfPage page = pdfDoc.addNewPage();
+            PdfCanvas canvas = new PdfCanvas(page);
+            for (int x = 0; x < 5; x++) {
+                for (int y = 1; y < 27; y++) {
+                    float xPoints = x * xOffset + page_x_border;
+                    float yPoints = transform(y * yOffset + page_y_border);
+                    if (count < listOfPairs.size()) {
+
+                        ToDoItem item = listOfPairs.get(count).getSecond();
+                        drawBox(canvas,
+                                listOfPairs.get(count).getFirst().getColour(),
+                                xPoints,
+                                yPoints,
+                                item.isBox(),
+                                item.getBoxText(),
+                                item.isCheckBox(),
+                                Optional.of(item.getName()),
+                                item.isComplete(),
+                                item.isImportant());
+//                    } else {
+//                        drawBox(canvas, GRAY.getColour(), xPoints, yPoints, false, Optional.empty(), true, Optional.empty(), false, false);
+                    }
                     count++;
                 }
             }

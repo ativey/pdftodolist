@@ -6,7 +6,7 @@ import java.util.Map;
 class CategoryMapTestUtils {
 
     static int countTasksForCategory(Map<Category, List<Task>> categoryListMap, String categoryName) {
-        Category test = new Category(categoryName);
+        Category test = new Category(categoryName, 0);
         return categoryListMap.get(test).size();
     }
 

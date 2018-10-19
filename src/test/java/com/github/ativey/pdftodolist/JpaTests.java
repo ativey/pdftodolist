@@ -27,9 +27,9 @@ public class JpaTests {
     @Test
     public void whenFindByName_thenReturnEmployee() {
         // given
-        Category c1 = new Category("Category1");
+        Category c1 = new Category("Category1", 0);
         entityManager.persist(c1);
-        Category c2 = new Category("Category2");
+        Category c2 = new Category("Category2", 1);
         entityManager.persist(c1);
         entityManager.flush();
 

@@ -34,7 +34,7 @@ public class YamlLoader {
         var ret = new HashMap();
         for(Object k: map.keySet()) {
             String key = (String) k;
-            Category category = new Category(key);
+            Category category = new Category(key, 1);
             List tasks = new ArrayList<Task>();
             ret.put(category, tasks);
             var taskNames = (List<String>) map.get(key);
