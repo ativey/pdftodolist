@@ -3,10 +3,6 @@ package com.github.ativey.pdftodolist.pdf;
 import com.itextpdf.kernel.colors.Color;
 import com.itextpdf.kernel.colors.DeviceRgb;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class PdfColor {
     
     private Color colour;
@@ -36,7 +32,7 @@ public class PdfColor {
     public static final PdfColor CRIMSON = new PdfColor(220, 20, 60);
     public static final PdfColor FIREBRICK = new PdfColor(178, 34, 34);
     public static final PdfColor RED = new PdfColor(255, 0, 0);
-    public static final PdfColor DARKRED = new PdfColor(139, 0, 0);
+    public static final PdfColor DARK_RED = new PdfColor(139, 0, 0);
 
     // Orange colors
     public static final PdfColor CORAL = new PdfColor(255, 127, 80);
@@ -114,33 +110,6 @@ public class PdfColor {
     public static final PdfColor SLATE_BLUE = new PdfColor(106, 90, 205);
     public static final PdfColor DARK_SLATE_BLUE = new PdfColor(72, 61, 139);
 
-
-
-//    static {
-//        names.addAll(Arrays.asList("LIGHT_SALMON", "SALMON", "DARK_SALMON", "LIGHT_CORAL", "INDIAN_RED", "CRIMSON", "FIREBRICK", "RED", "DARKRED"));
-//        names.addAll(Arrays.asList("CORAL", "TOMATO", "ORANGE_RED", "GOLD", "ORANGE", "DARK_ORANGE"));
-//
-//        names.addAll(Arrays.asList("LIGHT_YELLOW", "LEMON_CHIFFON", "LIGHT_GOLDENROD_YELLOW", "PAPAYAWHIP", "MOCCASIN", "PEACHPUFF", "PALE_GOLDENROD", "KHAKI", "DARK_KHAKI", "YELLOW"));
-//
-//        names.addAll(Arrays.asList("LAWN_GREEN", "CHARTREUSE", "LIME_GREEN", "LIME", "FOREST_GREEN", "GREEN", "DARK_GREEN", "GREEN_YELLOW", "YELLOW_GREEN", "SPRING_GREEN"));
-//        names.addAll(Arrays.asList("MEDIUM_SPRING_GREEN", "LIGHT_GREEN", "PALE_GREEN", "DARK_SEA_GREEN", "MEDIUM_SEA_GREEN", "SEA_GREEN", "OLIVE", "DARK_OLIVE_GREEN", "OLIVE_DRAB"));
-//
-//        names.addAll(Arrays.asList("LIGHT_CYAN", "CYAN", "AQUA", "AQUAMARINE", "MEDIUM_AQUAMARINE", "PALE_TURQUOISE", "TURQUOISE", "MEDIUM_TURQUOISE", "DARK_TURQUOISE", "LIGHT_SEA_GREEN", "CADET_BLUE", "DARK_CYAN", "TEAL"));
-//
-//        names.addAll(Arrays.asList("POWDER_BLUE", "LIGHT_BLUE", "LIGHT_SKY_BLUE", "SKY_BLUE", "DEEP_SKY_BLUE", "LIGHT_STEEL_BLUE", "DODGER_BLUE", "CORNFLOWER_BLUE", "STEEL_BLUE", "ROYAL_BLUE", "BLUE", "MEDIUM_BLUE", "DARK_BLUE", "NAVY", "MIDNIGHT_BLUE", "MEDIUM_SLATE_BLUE", "SLATE_BLUE", "DARK_SLATE_BLUE"));
-//
-//        // Purple colors
-//        names.addAll(Arrays.asList("", "", "", "", "", "", "", "", ""));
-//        names.addAll(Arrays.asList("", "", "", "", "", "", "", "", ""));
-//        names.addAll(Arrays.asList("", "", "", "", "", "", "", "", ""));        names.addAll(Arrays.asList("", "", "", "", "", "", "", "", ""));
-//        names.addAll(Arrays.asList("", "", "", "", "", "", "", "", ""));
-//        names.addAll(Arrays.asList("", "", "", "", "", "", "", "", ""));
-//
-//
-//    }
-
-
-
     // Purple colors
     public static final PdfColor LAVENDER = new PdfColor(230, 230, 250);
     public static final PdfColor THISTLE = new PdfColor(216, 191, 216);
@@ -156,9 +125,8 @@ public class PdfColor {
     public static final PdfColor DARK_ORCHID = new PdfColor(153, 50, 204);
     public static final PdfColor DARK_MAGENTA = new PdfColor(139, 0, 139);
     public static final PdfColor PURPLE = new PdfColor(128, 0, 128);
+    public static final PdfColor REBECCA_PURPLE = new PdfColor(102, 51, 153);
     public static final PdfColor INDIGO = new PdfColor(75, 0, 130);
-    public static final PdfColor REBECCA_PURPLE = new PdfColor(75, 0, 130);
-
 
     // Pink colors
     public static final PdfColor PINK = new PdfColor(255, 192, 203);
