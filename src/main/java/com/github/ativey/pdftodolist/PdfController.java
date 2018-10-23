@@ -69,13 +69,13 @@ class PdfController {
         for (Category category: categories) {
             if (showLabels) {
                 list.add(Pair.of(map.getOrDefault(category.getName(), REBECCA_PURPLE),
-                        new ToDoItem(false, "", false, category.getName(), false, false)));
+                        new ToDoItem(false, "", false, "  " + category.getName(), false, false)));
             }
-            //var tasks = taskRepository.findByCategory(category);
+            //var tasks = taskRepository.findByCategory(category);11
             var tasks = taskRepository.findAllByCategoryOrderByDisplayAsc(category);
             taskCount += tasks.size();
             for (Task task : tasks) {
-                ToDoItem item = new ToDoItem(true, "", true, task.getName(), false, false);
+                ToDoItem item = new ToDoItem(true, "", true, " " + task.getName(), false, false);
                 list.add(Pair.of(map.getOrDefault(task.getCategory().getName(), REBECCA_PURPLE), item));
             }
         }
