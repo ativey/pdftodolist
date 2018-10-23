@@ -67,12 +67,12 @@ class PdfController {
         List<Category> categories = categoryRepository.findAllByOrderByDisplayAsc();
 
         for (Category category: categories) {
-            if (showLabels) {
+            var tasks = taskRepository.findAllByCategoryOrderByDisplayAsc(category);
+            if ( showLabels && tasks.size() > 0 ) {
                 list.add(Pair.of(map.getOrDefault(category.getName(), REBECCA_PURPLE),
                         new ToDoItem(false, "", false, "  " + category.getName(), false, false)));
             }
-            //var tasks = taskRepository.findByCategory(category);11
-            var tasks = taskRepository.findAllByCategoryOrderByDisplayAsc(category);
+
             taskCount += tasks.size();
             for (Task task : tasks) {
                 ToDoItem item = new ToDoItem(true, "", true, " " + task.getName(), false, false);
