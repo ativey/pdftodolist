@@ -78,6 +78,8 @@ public class Task {
         return creationDate;
     }
 
+    public boolean isImportant() { return important; }
+
 //    public void setCreationDate(Instant creationDate) {
 //        this.creationDate = creationDate;
 //    }

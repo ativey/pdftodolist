@@ -26,6 +26,7 @@ public class YamlLoader {
 
     public LinkedHashMap<String, List<ToDoItem>> load(InputStream istream) throws IOException {
 
+        System.err.println("Loading YAML file");
         TreeMap<String, String> l;
 
         ObjectMapper mapper = createObjectMapper();
@@ -43,7 +44,14 @@ public class YamlLoader {
             ret.put(key1, tasks);
             if (taskNames != null) {
                 for (String taskName : taskNames) {
-                    ToDoItem toDoItem = new ToDoItem(false, "", true, taskName, false, false);
+                    boolean important = false;
+                    if (taskName.startsWith("=")) {
+                        important = true;
+                        System.err.println(taskName);
+                        taskName = taskName.substring(1);
+                        System.err.println(taskName);
+                    }
+                    ToDoItem toDoItem = new ToDoItem(false, "", true, taskName, false, important);
                     tasks.add(toDoItem);
                 }
             }

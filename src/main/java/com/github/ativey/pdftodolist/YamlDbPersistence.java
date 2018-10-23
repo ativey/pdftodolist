@@ -77,7 +77,7 @@ public class YamlDbPersistence {
             currentMax = current.getDisplay();
         }
         Task task = new Task(toDoItem.getName(), category, toDoItem.isImportant(), currentMax + 1);
-        System.err.println("Persisting " + task.getName() + " : " + task.getDisplay());
+        System.err.println("Persisting " + (toDoItem.isImportant() ? "=" : "") + task.getName() + " : " + task.getDisplay());
         entityManager.persist(task);
         return task;
     }
