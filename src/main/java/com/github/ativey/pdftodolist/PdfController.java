@@ -48,7 +48,7 @@ class PdfController {
         var list = new ArrayList<Pair<PdfColor, ToDoItem>>();
 
 
-        List<Category> categories = categoryRepository.findAllByOrderByDisplayDesc();
+        List<Category> categories = categoryRepository.findAllByOrderByDisplayAsc();
 
         for (Category category: categories) {
             if (showLabels) {

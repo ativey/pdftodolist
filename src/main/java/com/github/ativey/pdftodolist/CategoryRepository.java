@@ -12,7 +12,7 @@ public interface CategoryRepository  extends JpaRepository<Category, Long> {
 
     Optional<Category> findByName(String name);
 
-    List<Category> findAllByOrderByDisplayDesc();
+    List<Category> findAllByOrderByDisplayAsc();
 
     // TODO Check this is right
     //Category findDisplayFirstByOrderByDisplay();
