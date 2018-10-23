@@ -18,33 +18,39 @@ import java.util.*;
 @Component
 public class YamlLoader {
 
-    public Map<Category, List<Task>> load(File file) throws IOException {
+    public LinkedHashMap<Category, List<Task>> load(File file) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(file);
         return load(fileInputStream);
     }
 
 
-    public HashMap load(InputStream istream) throws IOException {
+    public LinkedHashMap<Category, List<Task>> load(InputStream istream) throws IOException {
+
+        TreeMap<String, String> l;
 
         ObjectMapper mapper = createObjectMapper();
 
-        HashMap map = new HashMap<String, List<String>>();
-        map = mapper.readValue(istream, map.getClass());
+        Map m = new LinkedHashMap<String, List<String>>();
+        m = mapper.readValue(istream, m.getClass());
 
-        var ret = new HashMap();
-        for(Object k: map.keySet()) {
-            String key = (String) k;
-            Category category = new Category(key, 1);
+        var ret = new LinkedHashMap<Category, List<Task>>();
+
+        m.forEach((key, value) -> {
+
+            String key1 = (String) key;
+            List<String> taskNames = (List<String>) value;
+            Category category = new Category(key1, 1);
             List tasks = new ArrayList<Task>();
             ret.put(category, tasks);
-            var taskNames = (List<String>) map.get(key);
             if (taskNames != null) {
                 for (String taskName : taskNames) {
                     Task task = new Task(taskName, category, true);
                     tasks.add(task);
                 }
             }
-        }
+
+        });
+
         return ret;
     }
 

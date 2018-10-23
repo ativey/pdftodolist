@@ -4,13 +4,14 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.github.ativey.pdftodolist.CategoryMapTestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-//@RunWith(SpringRunner.class)
+
 public class PdfTodLlistApplicationTests {
 
     private YamlLoader yamlLoader = new YamlLoader();
@@ -24,7 +25,7 @@ public class PdfTodLlistApplicationTests {
     public void testYamlLoader() throws IOException {
         // Read in both files and count items
 
-        Map<Category, List<Task>> categoryMap;
+        LinkedHashMap<Category, List<Task>> categoryMap;
 
         try (InputStream istream = this.getClass().getResourceAsStream("/jobs1.yaml")) {
             categoryMap = yamlLoader.load(istream);
