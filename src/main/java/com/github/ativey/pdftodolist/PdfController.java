@@ -75,7 +75,7 @@ class PdfController {
 
             taskCount += tasks.size();
             for (Task task : tasks) {
-                ToDoItem item = new ToDoItem(true, "", true, " " + task.getName(), false, task.isImportant());
+                ToDoItem item = new ToDoItem(true, (task.isImportant() ? "  *" : ""), true, " " + task.getName(), false, task.isImportant());
                 list.add(Pair.of(map.getOrDefault(task.getCategory().getName(), REBECCA_PURPLE), item));
             }
         }
