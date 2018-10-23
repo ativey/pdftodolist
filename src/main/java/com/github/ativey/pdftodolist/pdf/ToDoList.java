@@ -4,6 +4,10 @@ import com.github.ativey.pdftodolist.Category;
 import com.github.ativey.pdftodolist.CategoryRepository;
 import com.github.ativey.pdftodolist.Task;
 import com.github.ativey.pdftodolist.TaskRepository;
+import com.itextpdf.io.font.FontMetrics;
+import com.itextpdf.io.font.FontProgram;
+import com.itextpdf.io.font.FontProgramFactory;
+import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.colors.Color;
 import com.itextpdf.kernel.font.PdfFont;
@@ -15,6 +19,7 @@ import com.itextpdf.kernel.pdf.PdfViewerPreferences;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
 import org.springframework.util.ReflectionUtils;
 
@@ -44,9 +49,10 @@ public class ToDoList {
     // TODO Change transform matrix so item 0 top left
     // TODO Remove all hard-coded constants - mainly small gaps
 
-    private static PdfFont bodyFont;
+    //@Autowired
+    private PdfFont bodyFont;
 
-    private static PdfFont boldFont;
+    public static PdfFont boldFont;
 
     public static final String DEFAULT_DEST = "/home/work/Desktop/todo.pdf";
 
@@ -68,6 +74,13 @@ public class ToDoList {
 private String destination;
 
 
+    public static final String REGULAR =
+            "/fonts/junicode-1.001/Junicode-RegularCondensed.ttf";
+    public static final String BOLD =
+            "/fonts/junicode-1.001/Junicode-BoldCondensed.ttf";
+    //public static final String ITALIC =
+     //       "src/main/resources/fonts/Cardo-Italic.ttf";
+
     private static final long mmToPoint(double mm) {
         double point = mm * MM_TO_POINT;
         return (long) point;
@@ -75,9 +88,46 @@ private String destination;
 
     public ToDoList(String destination) {
         this.destination = destination;
+        //createFonts();
+    }
+
+    public void createFonts() {
         try {
-            bodyFont = PdfFontFactory.createFont(StandardFonts.HELVETICA);
-            boldFont = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
+
+//            System.err.println("bodyFont is '"+bodyFont+"'");
+
+//            System.err.println(ToDoList.class);
+//            System.err.println(ToDoList.class.getResourceAsStream(BOLD));
+//            byte[] fontData = ToDoList.class.getResourceAsStream(BOLD).readAllBytes();
+
+
+
+//                    FontProgram fontProgram =
+//                    FontProgramFactory.createFont(REGULAR);
+//
+//
+//                    bodyFont = PdfFontFactory.createFont(
+//                    fontProgram, PdfEncodings.WINANSI, true);
+            byte[] fontData = this.getClass().getResourceAsStream(REGULAR).readAllBytes();
+            bodyFont = PdfFontFactory.createFont(fontData, true);
+
+            FontMetrics fontMetrics = bodyFont.getFontProgram().getFontMetrics();
+            float textHeight = 1000.0f * fontMetrics.getAscender() - fontMetrics.getDescender();
+
+
+            //boldFont = PdfFontFactory.createFont(BOLD, true);
+            fontData = this.getClass().getResourceAsStream(BOLD).readAllBytes();
+                    boldFont = PdfFontFactory.createFont(fontData, true);
+            //PdfFont italicFont = PdfFontFactory.createFont(ITALIC, true);
+
+
+
+
+
+
+
+//            bodyFont = PdfFontFactory.createFont(StandardFonts.HELVETICA);
+//            boldFont = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
         } catch (IOException exp) {
             exp.printStackTrace();
         }
@@ -87,6 +137,7 @@ private String destination;
 
 
         ToDoList toDoList = new ToDoList(DEFAULT_DEST);
+        toDoList.createFonts();
         PdfDocument pdfDocument = toDoList.setup();
 
         toDoList.drawRandom(pdfDocument);
@@ -215,10 +266,11 @@ private String destination;
                 .closePath()
                 .clip();
         canvas.newPath();
+        double yTextOffset = mmToPoint(1);
         canvas.beginText()
                 .setFontAndSize(important ? boldFont : bodyFont, fontSize)
                 .setColor(colour, true)
-                .moveText(effectiveStartX, y + ((height - fontSize)/2) )
+                .moveText(effectiveStartX, y + ((height - fontSize)/2) + yTextOffset)
                 .showText(text)
                 .endText();
         canvas.restoreState();

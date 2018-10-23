@@ -69,7 +69,7 @@ class PdfController {
         for (Category category: categories) {
             var tasks = taskRepository.findAllByCategoryOrderByDisplayAsc(category);
             if ( showLabels && tasks.size() > 0 ) {
-                list.add(Pair.of(map.getOrDefault(category.getName(), REBECCA_PURPLE),
+                list.add(Pair.of(map.getOrDefault(category.getName(), SILVER),
                         new ToDoItem(false, "", false, "  " + category.getName(), false, false)));
             }
 
@@ -82,6 +82,7 @@ class PdfController {
 
         System.err.println("The number of tasks is " + taskCount);
 
+        toDoList.createFonts();
         PdfDocument pdfDocument = toDoList.setup();
 
         toDoList.drawFromList(pdfDocument, list);
