@@ -1,24 +1,18 @@
 package com.github.ativey.pdftodolist;
 
+import com.github.ativey.pdftodolist.pdf.ToDoItem;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
-import static com.github.ativey.pdftodolist.CategoryMapTestUtils.countAllTasks;
-import static com.github.ativey.pdftodolist.CategoryMapTestUtils.countCategories;
-import static com.github.ativey.pdftodolist.CategoryMapTestUtils.countTasksForCategory;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -46,7 +40,7 @@ public class YamlDbPersistenceTests {
     @Test
     public void whenFindByName_thenReturnEmployee() throws IOException {
 
-        Map<Category, List<Task>> categoryListMap;
+        LinkedHashMap<String, List<ToDoItem>> categoryListMap;
 
         try (InputStream istream = this.getClass().getResourceAsStream("/jobs1.yaml")) {
             categoryListMap = yamlLoader.load(istream);
@@ -67,9 +61,9 @@ public class YamlDbPersistenceTests {
             //noinspection OptionalGetWithoutIsPresent
             //assertThat(found.get().getName()).isEqualTo(c1.getName());
 
-//            assertThat(countCategories(categoryListMap)).isEqualTo(4);
+//            assertThat(countCategoryNames(categoryListMap)).isEqualTo(4);
 //            assertThat(countAllTasks(categoryListMap)).isEqualTo(20);
-//            assertThat(countTasksForCategory(categoryListMap, "CategoryC")).isEqualTo(5);
+//            assertThat(countTasksForCategoryName(categoryListMap, "CategoryC")).isEqualTo(5);
         }
 
 

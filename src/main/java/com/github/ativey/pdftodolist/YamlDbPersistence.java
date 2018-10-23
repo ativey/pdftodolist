@@ -1,5 +1,6 @@
 package com.github.ativey.pdftodolist;
 
+import com.github.ativey.pdftodolist.pdf.ToDoItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,15 +21,15 @@ public class YamlDbPersistence {
     private TaskRepository taskRepository;
 
     @Transactional
-    public void persist(Map<Category, List<Task>> categoryListMap) {
+    public void persist(LinkedHashMap<String, List<ToDoItem>> categoryListMap) {
         for (var entry: categoryListMap.entrySet()) {
-            Category category = entry.getKey();
-            List<Task> tasks = entry.getValue();
+            String categoryName = entry.getKey();
+            Category category = findOrPersistCategory(categoryName);
 
-            category = findOrPersistCategory(category);
+            List<ToDoItem> todoItems = entry.getValue();
 
-            for (Task task : tasks) {
-                findOrPersistTask(task, category);
+            for (ToDoItem toDoItem : todoItems) {
+                findOrPersistTask(toDoItem, category);
             }
             long count = categoryRepository.count();
         }
@@ -36,8 +37,9 @@ public class YamlDbPersistence {
     }
 
 //    @Transactional
-    public Category findOrPersistCategory(Category category) {
-        Optional<Category> found = categoryRepository.findByName(category.getName());
+
+    public Category findOrPersistCategory(String categoryName) {
+        Optional<Category> found = categoryRepository.findByName(categoryName);
         //System.err.print("Category name is " + category.getName());
         if (found.isPresent()) {
             //System.err.println("  : Found");
@@ -51,15 +53,16 @@ public class YamlDbPersistence {
         if (current != null) {
             currentMax = current.getDisplay();
         }
-        category.setDisplay(currentMax+1);
+        Category category = new Category(categoryName, currentMax +1);
         //System.err.println("Persisting " + category.getName() + " : " + category.getDisplay());
         entityManager.persist(category);
         return category;
     }
 
+
     //    @Transactional
-    public Task findOrPersistTask(Task task, Category category) {
-        Optional<Task> found = taskRepository.findByName(task.getName());
+    public Task findOrPersistTask(ToDoItem toDoItem, Category category) {
+        Optional<Task> found = taskRepository.findByName(toDoItem.getName());
         //System.err.print("Task name is " + task.getName());
         if (found.isPresent()) {
             //System.err.println("  : Found");
@@ -73,8 +76,7 @@ public class YamlDbPersistence {
         if (current != null) {
             currentMax = current.getDisplay();
         }
-        task.setDisplay(currentMax+1);
-        task.setCategory(category);
+        Task task = new Task(toDoItem.getName(), category, toDoItem.isImportant(), currentMax + 1);
         System.err.println("Persisting " + task.getName() + " : " + task.getDisplay());
         entityManager.persist(task);
         return task;

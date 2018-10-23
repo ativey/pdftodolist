@@ -47,14 +47,11 @@ public class Task {
         this.category = category;
     }
 
-    public Task() {
-        // Deliberately empty
-    }
-
-    public Task(@Size(min = 1, max = 80) String name, Category category, boolean important) {
+    public Task(@Size(min = 1, max = 80) String name, Category category, boolean important, int display) {
         this.name = name;
         this.category = category;
         this.important = important;
+        this.display = display;
         this.creationDate = Instant.now();
     }
 

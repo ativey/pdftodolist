@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.github.ativey.pdftodolist.pdf.ToDoItem;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -18,13 +19,12 @@ import java.util.*;
 @Component
 public class YamlLoader {
 
-    public LinkedHashMap<Category, List<Task>> load(File file) throws IOException {
+    public LinkedHashMap<String, List<ToDoItem>> load(File file) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(file);
         return load(fileInputStream);
     }
 
-
-    public LinkedHashMap<Category, List<Task>> load(InputStream istream) throws IOException {
+    public LinkedHashMap<String, List<ToDoItem>> load(InputStream istream) throws IOException {
 
         TreeMap<String, String> l;
 
@@ -33,19 +33,18 @@ public class YamlLoader {
         Map m = new LinkedHashMap<String, List<String>>();
         m = mapper.readValue(istream, m.getClass());
 
-        var ret = new LinkedHashMap<Category, List<Task>>();
+        var ret = new LinkedHashMap<String, List<ToDoItem>>();
 
         m.forEach((key, value) -> {
 
             String key1 = (String) key;
             List<String> taskNames = (List<String>) value;
-            Category category = new Category(key1, 1);
-            List tasks = new ArrayList<Task>();
-            ret.put(category, tasks);
+            List tasks = new ArrayList<ToDoItem>();
+            ret.put(key1, tasks);
             if (taskNames != null) {
                 for (String taskName : taskNames) {
-                    Task task = new Task(taskName, category, true);
-                    tasks.add(task);
+                    ToDoItem toDoItem = new ToDoItem(false, "", true, taskName, false, false);
+                    tasks.add(toDoItem);
                 }
             }
 
