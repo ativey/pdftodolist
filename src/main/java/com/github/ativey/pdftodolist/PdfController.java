@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,10 +40,25 @@ class PdfController {
 
         ToDoList toDoList = new ToDoList("/home/work/Desktop/todo.pdf");
 
-        Map<String, PdfColor> map = Map.of("CategoryA", INDIAN_RED, "CategoryB", LIME_GREEN,
-                "CategoryC", DARK_VIOLET, "CategoryD", MEDIUM_VIOLET_RED,
-                "CategoryE", CHOCOLATE, "CategoryF", DARK_ORANGE,
-                "CategoryG", MIDNIGHT_BLUE);
+        Map<String, PdfColor> map = new HashMap<>();
+        map.put("Home", SALMON);
+        map.put("Home_Kitchen", RED);
+        map.put("Home_Garden", INDIAN_RED);
+        map.put("Home_FrontRoom", ORCHID);
+        map.put("Home_Office", DARK_RED);
+        map.put("Pdftodolist", DARK_ORANGE);
+        map.put("GeneDB", ORANGE);
+        map.put("Laptop", PERU);
+        map.put("MainPC", GOLDENROD);
+        map.put("Computing", SANDY_BROWN);
+        map.put("Career", OLIVE);
+        map.put("Personal", CHARTREUSE);
+        map.put("Financial", DARK_GREEN);
+        map.put("Car", YELLOW_GREEN);
+        map.put("Media", MEDIUM_SLATE_BLUE);
+        map.put("Dad", CYAN);
+        map.put("Unsorted", DARK_KHAKI);
+
         int taskCount = 0;
 
         var list = new ArrayList<Pair<PdfColor, ToDoItem>>();
