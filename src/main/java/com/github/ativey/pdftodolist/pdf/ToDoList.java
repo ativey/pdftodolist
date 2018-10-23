@@ -164,7 +164,7 @@ private String destination;
 
         PdfViewerPreferences viewerPreferences = new PdfViewerPreferences();
         pdfDoc.getCatalog().setViewerPreferences(viewerPreferences);
-        viewerPreferences.setDuplex(PdfViewerPreferences.PdfViewerPreferencesConstants.DUPLEX_FLIP_LONG_EDGE);
+        viewerPreferences.setDuplex(PdfViewerPreferences.PdfViewerPreferencesConstants.DUPLEX_FLIP_SHORT_EDGE);
 
         //drawFromDb(pdfDoc);
         //drawRandom(pdfDoc);
@@ -223,8 +223,8 @@ private String destination;
                                 Optional.of(item.getName()),
                                 item.isComplete(),
                                 item.isImportant());
-//                    } else {
-//                        drawBox(canvas, GRAY.getColour(), xPoints, yPoints, false, Optional.empty(), true, Optional.empty(), false, false);
+                    } else {
+                        drawBox(canvas, GRAY.getColour(), xPoints, yPoints, true, Optional.empty(), false, Optional.empty(), false, false);
                     }
                     count++;
                 }
