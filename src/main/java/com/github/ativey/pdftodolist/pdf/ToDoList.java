@@ -166,7 +166,6 @@ private String destination;
         pdfDoc.getCatalog().setViewerPreferences(viewerPreferences);
         viewerPreferences.setDuplex(PdfViewerPreferences.PdfViewerPreferencesConstants.DUPLEX_FLIP_SHORT_EDGE);
 
-        //drawFromDb(pdfDoc);
         //drawRandom(pdfDoc);
         return pdfDoc;
     }
