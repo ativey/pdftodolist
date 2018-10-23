@@ -13,6 +13,7 @@ public class ToDoItem {
     public ToDoItem(boolean box, String boxText, boolean checkbox, String name, boolean complete, boolean important) {
         this.box = box;
         this.boxText = Optional.ofNullable(boxText);
+        this.checkBox = checkbox;
         this.name = name;
         this.complete = complete;
         this.important = important;
