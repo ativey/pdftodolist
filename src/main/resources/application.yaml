@@ -1,22 +1,19 @@
 spring:
-    mvc:
-        view.prefix: /WEB-INF/jsp/
-        view.suffix: .jsp
+  mvc:
+    view.prefix: /WEB-INF/jsp/
+    view.suffix: .jsp
 
-    datasource:
-        url: jdbc:mysql://localhost:3306/pdftodolist?autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true
-        username: work
-        password: XXX
-        # Keep the connection alive if idle for a long time (needed in production)
-        testWhileIdle: true
-        validationQuery: SELECT 1
+  datasource:
+    url: jdbc:postgresql://localhost:5432/pdftodolist
+    username: art
+    password: XXX
 
-    jpa:
-        show-sql: false
-        properties.hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
+  jpa:
+    show-sql: false
+    properties.hibernate.dialect: org.hibernate.dialect.PostgreSQL94Dialect
 
-        hibernate:
-            ddl-auto: create
-            #ddl-auto = update
-            naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    hibernate:
+      ddl-auto: create
+      #ddl-auto = update
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
 
