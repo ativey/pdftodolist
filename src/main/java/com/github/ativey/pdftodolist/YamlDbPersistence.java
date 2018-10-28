@@ -62,22 +62,27 @@ public class YamlDbPersistence {
 
     //    @Transactional
     public Task findOrPersistTask(ToDoItem toDoItem, Category category) {
-        Optional<Task> found = taskRepository.findByName(toDoItem.getName());
-        //System.err.print("Task name is " + task.getName());
+        Optional<Task> found = taskRepository.findByNameAndCategory(toDoItem.getName(), category);
         if (found.isPresent()) {
-            //System.err.println("  : Found");
             return found.get();
+        }
+
+
+        if (taskRepository.countTasksByNameEquals(toDoItem.getName()) > 0) {
+            System.err.println(
+                    String.format(
+                            "Storing task '%s' in category '%s'. Note this task name is used in other categories",
+                            toDoItem.getName(), category.getName()));
         }
 
         //System.err.println("  : Not found. Need to update order");
         Task current = taskRepository.findFirstByOrderByDisplayDesc();
-        //System.err.println((current==null) ? "null" : "Max display count is " + current.getDisplay());
         int currentMax = 0;
         if (current != null) {
             currentMax = current.getDisplay();
         }
         Task task = new Task(toDoItem.getName(), category, toDoItem.isImportant(), toDoItem.isComplete(), currentMax + 1);
-        System.err.println("Persisting " + (toDoItem.isImportant() ? "=" : "") + (toDoItem.isComplete() ? "^" : "") + task.getName() + " : " + task.getDisplay());
+        //System.err.println("Persisting " + (toDoItem.isImportant() ? "=" : "") + (toDoItem.isComplete() ? "^" : "") + task.getName() + " : " + task.getDisplay());
         entityManager.persist(task);
         return task;
     }

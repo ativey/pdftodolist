@@ -11,7 +11,9 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     Optional<Task> findByNameAndCategory(String name, Category category);
 
-    Optional<Task> findByName(String name);
+    List<Task> findByName(String name);
+
+    int countTasksByNameEquals(String name);
 
     List<Task> findByCategory(Category category);
 
