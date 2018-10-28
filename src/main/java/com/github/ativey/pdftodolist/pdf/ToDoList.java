@@ -265,15 +265,30 @@ private String destination;
                 .closePath()
                 .clip();
         canvas.newPath();
-        double yTextOffset = mmToPoint(1);
+        double yTextOffset = mmToPoint(1.1);
+        PdfFont current = important ? boldFont : bodyFont;
         canvas.beginText()
-                .setFontAndSize(important ? boldFont : bodyFont, fontSize)
+                .setFontAndSize(current, fontSize)
                 .setColor(colour, true)
                 .moveText(effectiveStartX, y + ((height - fontSize)/2) + yTextOffset)
                 .showText(text)
                 .endText();
-        canvas.restoreState();
+        //canvas.restoreState();
+        double width = current.getWidth(text, fontSize);
+
+
         // TODO Strike-through if complete, or otherwise indicate
+        if (complete) {
+            System.err.println("Completing text '"+text+"'");
+            canvas.newPath();
+            canvas.setStrokeColor(colour)
+                    .setLineWidth(canvas.getGraphicsState().getLineWidth()/2)
+            .moveTo(effectiveStartX, y+height/2)
+                    //.lineTo(effectiveEndX, y+height/2)
+                    .lineTo(effectiveStartX + width + mmToPoint(1), y+height/2)
+                    .stroke();
+        }
+        canvas.restoreState();
     }
 
     private void drawBox(PdfCanvas canvas, Color colour, double boxFarLeftX, double x, double y, Optional<String> boxText, boolean important) throws IOException {

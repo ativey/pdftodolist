@@ -24,7 +24,7 @@ public class Task {
 
     private boolean important;
 
-    private boolean closed = false;
+    private boolean complete = false;
 
     @Column(unique = true)
     private int display;
@@ -47,10 +47,11 @@ public class Task {
         this.category = category;
     }
 
-    public Task(@Size(min = 1, max = 80) String name, Category category, boolean important, int display) {
+    public Task(@Size(min = 1, max = 80) String name, Category category, boolean important, boolean complete, int display) {
         this.name = name;
         this.category = category;
         this.important = important;
+        this.complete = complete;
         this.display = display;
         this.creationDate = Instant.now();
     }
@@ -79,6 +80,10 @@ public class Task {
     }
 
     public boolean isImportant() { return important; }
+
+    public boolean isComplete() {
+        return complete;
+    }
 
 //    public void setCreationDate(Instant creationDate) {
 //        this.creationDate = creationDate;

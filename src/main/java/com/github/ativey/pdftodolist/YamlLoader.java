@@ -44,14 +44,8 @@ public class YamlLoader {
             ret.put(key1, tasks);
             if (taskNames != null) {
                 for (String taskName : taskNames) {
-                    boolean important = false;
-                    if (taskName.startsWith("=")) {
-                        important = true;
-                        System.err.println(taskName);
-                        taskName = taskName.substring(1);
-                        System.err.println(taskName);
-                    }
-                    ToDoItem toDoItem = new ToDoItem(false, "", true, taskName, false, important);
+                    ToDoItem toDoItem = new ToDoItem(false, "", true, taskName);
+
                     tasks.add(toDoItem);
                 }
             }

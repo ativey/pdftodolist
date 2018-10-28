@@ -3,7 +3,7 @@ package com.github.ativey.pdftodolist.pdf;
 import java.util.Optional;
 
 public class ToDoItem {
-    String name;
+    private String name;
     private boolean box;
     private boolean complete;
     private boolean important;
@@ -17,6 +17,34 @@ public class ToDoItem {
         this.name = name;
         this.complete = complete;
         this.important = important;
+    }
+
+
+
+    public ToDoItem(boolean box, String boxText, boolean checkbox, String inName) {
+        this.box = box;
+        this.boxText = Optional.ofNullable(boxText);
+        this.checkBox = checkbox;
+        this.name = inName;
+
+        boolean finished;
+
+        do {
+            finished = true;
+            if (this.name.startsWith("=")) {
+                this.important = true;
+                this.name = this.name.substring(1);
+                finished = false;
+            }
+
+            if (this.name.startsWith("^")) {
+                this.complete = true;
+                this.name = this.name.substring(1);
+                finished = false;
+            }
+        } while (!finished);
+
+
     }
 
 
@@ -43,4 +71,5 @@ public class ToDoItem {
     public boolean isImportant() {
         return important;
     }
+
 }
