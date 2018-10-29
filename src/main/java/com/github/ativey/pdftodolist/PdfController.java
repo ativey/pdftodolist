@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.github.ativey.pdftodolist.pdf.PdfColor.*;
 
@@ -31,8 +28,14 @@ class PdfController {
     }
 
     @PostMapping("/generatePdf")
-    public String generatePdf(String outputFile) throws IOException {
-        boolean showLabels = true;
+    public String generatePdf(boolean showLabels, Optional<CompletedDisplayStrategy> strategy) throws IOException {
+        System.err.println("showLabels is '"+showLabels+"'");
+        return generatePdf(showLabels, strategy.orElse(CompletedDisplayStrategy.END_OF_LIST));
+    }
+
+
+
+    public String generatePdf(boolean showLabels, CompletedDisplayStrategy completedDisplayStrategy) throws IOException {
         System.err.println("Generate PDF");
 
         ToDoList toDoList = new ToDoList("/home/work/Desktop/todo.pdf");
@@ -56,7 +59,7 @@ class PdfController {
         map.put("Dad", CYAN);
         map.put("Unsorted", DARK_KHAKI);
 
-        ArrayList<Pair<PdfColor, ToDoItem>> list = dbDrivenToDoListGenerator.generateToDoItemList(map, showLabels, CompletedDisplayStrategy.END_OF_CATEGORY);
+        ArrayList<Pair<PdfColor, ToDoItem>> list = dbDrivenToDoListGenerator.generateToDoItemList(map, showLabels, completedDisplayStrategy);
 
         toDoList.createFonts();
         PdfDocument pdfDocument = toDoList.setup();

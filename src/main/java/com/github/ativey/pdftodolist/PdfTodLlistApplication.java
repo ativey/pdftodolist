@@ -33,7 +33,7 @@ public class PdfTodLlistApplication implements CommandLineRunner {
         var categoryListMap = yamlLoader.load(new File("/home/work/Desktop/main_tasks.yaml"));
         yamlDbPersistence.persist(categoryListMap);
 
-        pdfController.generatePdf(null);
+        pdfController.generatePdf(true, CompletedDisplayStrategy.END_OF_CATEGORY);
 
     }
 

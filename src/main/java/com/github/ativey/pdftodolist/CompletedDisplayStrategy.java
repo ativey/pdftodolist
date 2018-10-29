@@ -7,9 +7,9 @@ public enum CompletedDisplayStrategy {
     END_OF_CATEGORY(false, true, false),
     END_OF_LIST(false, false, true);
 
-    public final boolean displayCompletedInLine;
-    public final boolean displayCompletedAtEndOfCategory;
-    public final boolean displayCompletedAtEndOfList;
+    final boolean displayCompletedInLine;
+    final boolean displayCompletedAtEndOfCategory;
+    final boolean displayCompletedAtEndOfList;
 
     private CompletedDisplayStrategy(boolean displayCompletedInLine, boolean displayCompletedAtEndOfCategory, boolean displayCompletedAtEndOfList) {
         this.displayCompletedInLine = displayCompletedInLine;

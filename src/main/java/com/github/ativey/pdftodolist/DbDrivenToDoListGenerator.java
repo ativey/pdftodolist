@@ -5,6 +5,7 @@ import com.github.ativey.pdftodolist.pdf.ToDoItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ class DbDrivenToDoListGenerator {
     @Autowired
     private TaskRepository taskRepository;
 
-
+    //@Transactional
     public ArrayList<Pair<PdfColor, ToDoItem>> generateToDoItemList(Map<String, PdfColor> map, boolean showLabels, CompletedDisplayStrategy completedDisplayStrategy) {
 
         var ret = new ArrayList<Pair<PdfColor, ToDoItem>>();

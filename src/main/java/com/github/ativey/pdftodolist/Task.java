@@ -47,6 +47,10 @@ public class Task {
         this.category = category;
     }
 
+    private Task() {
+        // For JPA
+    }
+
     public Task(@Size(min = 1, max = 80) String name, Category category, boolean important, boolean complete, int display) {
         this.name = name;
         this.category = category;
