@@ -1,6 +1,8 @@
 package com.github.ativey.pdftodolist;
 
 import com.github.ativey.pdftodolist.pdf.ToDoItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +12,9 @@ import java.util.*;
 
 @Component
 public class YamlDbPersistence {
+
+    private static final Logger logger = LoggerFactory.getLogger(YamlDbPersistence.class);
+
 
     @Autowired
     private EntityManager entityManager;
@@ -36,7 +41,6 @@ public class YamlDbPersistence {
 
     }
 
-//    @Transactional
 
     public Category findOrPersistCategory(String categoryName) {
         Optional<Category> found = categoryRepository.findByName(categoryName);
@@ -60,7 +64,6 @@ public class YamlDbPersistence {
     }
 
 
-    //    @Transactional
     public Task findOrPersistTask(ToDoItem toDoItem, Category category) {
         Optional<Task> found = taskRepository.findByNameAndCategory(toDoItem.getName(), category);
         if (found.isPresent()) {
@@ -69,20 +72,19 @@ public class YamlDbPersistence {
 
 
         if (taskRepository.countTasksByNameEquals(toDoItem.getName()) > 0) {
-            System.err.println(
-                    String.format(
-                            "Storing task '%s' in category '%s'. Note this task name is used in other categories",
-                            toDoItem.getName(), category.getName()));
+            logger.warn("Storing task '%s' in category '%s'. Note this task name is used in other categories",
+                            toDoItem.getName(), category.getName());
         }
 
-        //System.err.println("  : Not found. Need to update order");
+        // Not found. Need to update order
         Task current = taskRepository.findFirstByOrderByDisplayDesc();
         int currentMax = 0;
         if (current != null) {
             currentMax = current.getDisplay();
         }
         Task task = new Task(toDoItem.getName(), category, toDoItem.isImportant(), toDoItem.isComplete(), currentMax + 1);
-        //System.err.println("Persisting " + (toDoItem.isImportant() ? "=" : "") + (toDoItem.isComplete() ? "^" : "") + task.getName() + " : " + task.getDisplay());
+        logger.debug("Persisting %s%s%s : %d",
+                (toDoItem.isImportant() ? "=" : ""), (toDoItem.isComplete() ? "^" : ""), task.getName(), task.getDisplay());
         entityManager.persist(task);
         return task;
     }

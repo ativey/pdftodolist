@@ -22,10 +22,7 @@ import static com.github.ativey.pdftodolist.pdf.PdfColor.*;
 class PdfController {
 
     @Autowired
-    private CategoryRepository categoryRepository;
-
-    @Autowired
-    private TaskRepository taskRepository;
+    private DbDrivenToDoListGenerator dbDrivenToDoListGenerator;
 
 
     @GetMapping("/generatePdf")
@@ -59,28 +56,7 @@ class PdfController {
         map.put("Dad", CYAN);
         map.put("Unsorted", DARK_KHAKI);
 
-        int taskCount = 0;
-
-        var list = new ArrayList<Pair<PdfColor, ToDoItem>>();
-
-
-        List<Category> categories = categoryRepository.findAllByOrderByDisplayAsc();
-
-        for (Category category: categories) {
-            var tasks = taskRepository.findAllByCategoryOrderByDisplayAsc(category);
-            if ( showLabels && tasks.size() > 0 ) {
-                list.add(Pair.of(map.getOrDefault(category.getName(), SILVER),
-                        new ToDoItem(false, "", false, "  " + category.getName(), false, false)));
-            }
-
-            taskCount += tasks.size();
-            for (Task task : tasks) {
-                ToDoItem item = new ToDoItem(true, (task.isImportant() ? "  *" : ""), true, " " + task.getName(), task.isComplete(), task.isImportant());
-                list.add(Pair.of(map.getOrDefault(task.getCategory().getName(), REBECCA_PURPLE), item));
-            }
-        }
-
-        System.err.println("The number of tasks is " + taskCount);
+        ArrayList<Pair<PdfColor, ToDoItem>> list = dbDrivenToDoListGenerator.generateToDoItemList(map, showLabels, CompletedDisplayStrategy.END_OF_CATEGORY);
 
         toDoList.createFonts();
         PdfDocument pdfDocument = toDoList.setup();

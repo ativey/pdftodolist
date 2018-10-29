@@ -21,6 +21,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     List<Task> findAllByCategoryOrderByDisplayAsc(Category category);
 
+    List<Task> findTasksByCategoryAndCompleteOrderByDisplayAsc(Category category, boolean complete);
+
     //List<Category> findAllByCategoryByOrderByDisplayDesc(Category category);
 
     //List<Task> findByCategoryOrderByDisplayAsc(Category category);
