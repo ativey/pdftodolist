@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.Clock;
 import java.util.HashMap;
@@ -37,6 +38,9 @@ class MainTaskController {
 
     @Autowired
     DbDrivenToDoListGenerator dbDrivenToDoListGenerator;
+
+    @Autowired
+    PdfController pdfController;
 
     @GetMapping("/")
     public String index(ModelMap modelMap) {
@@ -117,5 +121,19 @@ class MainTaskController {
 
         return "redirect:/";
     }
+
+
+
+
+    @GetMapping("/quickTest")
+    public String quickTest() throws Exception {
+
+        var categoryListMap = yamlLoader.load(new File("/home/work/Desktop/main_tasks.yaml"));
+        yamlDbPersistence.persist(categoryListMap);
+
+        pdfController.generatePdf(true, CompletedDisplayStrategy.END_OF_CATEGORY);
+        return "redirect:/";
+    }
+
 
 }

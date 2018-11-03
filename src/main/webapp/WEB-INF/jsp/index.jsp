@@ -8,8 +8,9 @@
     <a href="addTask">Add Task</a>
     <a href="editTask">Edit Task</a>
     <a href="importTasks">Import Tasks</a>
+    <a href="quickTest">Quick Test</a>
 </p>
-<font size="8">
+
 <ul>
 <c:forEach var="pair" items="${list}">
     <li style="color:${pair.first.hexString};">
@@ -21,7 +22,5 @@
     </li>
 </c:forEach>
 </ul>
-</font>
-
 
 </html>
