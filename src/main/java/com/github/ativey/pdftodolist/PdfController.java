@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -20,6 +21,11 @@ class PdfController {
 
     @Autowired
     private DbDrivenToDoListGenerator dbDrivenToDoListGenerator;
+
+
+    @Autowired
+    private ToDoList toDoList;
+
 
 
     @GetMapping("/generatePdf")
@@ -38,7 +44,8 @@ class PdfController {
     public String generatePdf(boolean showLabels, CompletedDisplayStrategy completedDisplayStrategy) throws IOException {
         System.err.println("Generate PDF");
 
-        ToDoList toDoList = new ToDoList("/home/work/Desktop/todo.pdf");
+//        ToDoList toDoList = new ToDoList("/home/work/Desktop/todo.pdf");
+
 
         Map<String, PdfColor> map = new HashMap<>();
         map.put("Home", SALMON);
@@ -62,7 +69,9 @@ class PdfController {
         ArrayList<Pair<PdfColor, ToDoItem>> list = dbDrivenToDoListGenerator.generateToDoItemList(map, showLabels, completedDisplayStrategy);
 
         toDoList.createFonts();
+        toDoList.setDestination("/home/work/Desktop/todo.pdf");
         PdfDocument pdfDocument = toDoList.setup();
+
 
         toDoList.drawFromList(pdfDocument, list);
         pdfDocument.close();
