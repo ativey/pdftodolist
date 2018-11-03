@@ -39,7 +39,8 @@ public class ColorChart {
     public static void main(String... args) throws IOException {
 
 
-        ToDoList toDoList = new ToDoList(DEST);
+        ToDoList toDoList = new ToDoList();
+        toDoList.setDestination(DEST);
         PdfDocument pdfDocument = toDoList.setup();
 
         var list = getCssColours(pdfDocument);
