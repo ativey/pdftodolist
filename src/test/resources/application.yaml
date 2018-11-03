@@ -1,13 +1,12 @@
 spring:
-    mvc:
-        view.prefix: /WEB-INF/jsp/
-        view.suffix: .jsp
+  mvc:
+    view.prefix: /WEB-INF/jsp/
+    view.suffix: .jsp
 
-    jpa:
-        show-sql: false
+  jpa:
+    show-sql: false
 
-        hibernate:
-            #ddl-auto: create
-            ddl-auto: update
-            naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
-
+    hibernate:
+      #ddl-auto: create
+      ddl-auto: update
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
