@@ -13,9 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import java.io.IOException;
 import java.util.Optional;
 
-import static com.github.ativey.pdftodolist.pdf.ToDoList.BOLD;
-import static com.github.ativey.pdftodolist.pdf.ToDoList.REGULAR;
-
 @Configuration
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix="fonts")

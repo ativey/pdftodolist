@@ -1,0 +1,18 @@
+drop table category if exists;
+drop table task if exists;
+
+create table category (
+    categoryid int not null,
+    name varchar(20) not null,
+    constraint pk_category primary key (categoryid)
+);
+
+create table task (
+    taskid int not null,
+    name varchar(40) not null,
+    categoryid int not null,
+    important BOOLEAN DEFAULT FALSE NOT NULL,
+    constraint pk_task primary key (taskid),
+        constraint fk_task_1 foreign key (categoryid)
+        references category (categoryid)
+);

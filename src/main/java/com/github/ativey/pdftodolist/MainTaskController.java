@@ -12,13 +12,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.Clock;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static com.github.ativey.pdftodolist.pdf.PdfColor.*;
-import static com.github.ativey.pdftodolist.pdf.PdfColor.DARK_KHAKI;
 
 @Controller
 class MainTaskController {
