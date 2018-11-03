@@ -1,14 +1,8 @@
 package com.github.ativey.pdftodolist.pdf;
 
-import com.github.ativey.pdftodolist.Category;
 import com.github.ativey.pdftodolist.CategoryRepository;
-import com.github.ativey.pdftodolist.Task;
 import com.github.ativey.pdftodolist.TaskRepository;
 import com.itextpdf.io.font.FontMetrics;
-import com.itextpdf.io.font.FontProgram;
-import com.itextpdf.io.font.FontProgramFactory;
-import com.itextpdf.io.font.PdfEncodings;
-import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.colors.Color;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
@@ -19,21 +13,21 @@ import com.itextpdf.kernel.pdf.PdfViewerPreferences;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
-import org.springframework.util.ReflectionUtils;
+import org.springframework.stereotype.Component;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 import static com.github.ativey.pdftodolist.pdf.PdfColor.*;
 
 
 // find . -path ./.git -prune -o -type f -name '*.java' -print0 | xargs -0 sed -i 's/core.simple.ParameterizedRowMapper/core.RowMapper/g'
 
+@Component
 public class ToDoList {
 
 
@@ -71,6 +65,14 @@ public class ToDoList {
     @Autowired
     private CategoryRepository categoryRepository;
 
+
+    @Autowired
+    private String bodyFontName;
+
+
+    @Autowired
+    private String boldFontName;
+
 private String destination;
 
 
@@ -81,14 +83,22 @@ private String destination;
     //public static final String ITALIC =
      //       "src/main/resources/fonts/Cardo-Italic.ttf";
 
+
+
+
+
     private static final long mmToPoint(double mm) {
         double point = mm * MM_TO_POINT;
         return (long) point;
     }
 
-    public ToDoList(String destination) {
+//    public ToDoList(String destination) {
+//        this.destination = destination;
+//        //createFonts();
+//    }
+
+    public void setDestination(String destination) {
         this.destination = destination;
-        //createFonts();
     }
 
     public void createFonts() {
@@ -136,8 +146,9 @@ private String destination;
     public static void main(String... args) throws IOException {
 
 
-        ToDoList toDoList = new ToDoList(DEFAULT_DEST);
+        ToDoList toDoList = new ToDoList();
         toDoList.createFonts();
+        toDoList.setDestination(DEFAULT_DEST);
         PdfDocument pdfDocument = toDoList.setup();
 
         toDoList.drawRandom(pdfDocument);
@@ -200,6 +211,8 @@ private String destination;
     }
 
     public void drawFromList(PdfDocument pdfDoc, List<Pair<PdfColor, ToDoItem>> listOfPairs) throws IOException {
+        System.err.println("bodyFontName is '"+bodyFontName+"'");
+        System.err.println("boldFontName is '"+boldFontName+"'");
 
         int count = 0;
         for (int i = 0; i < 2; i++) {
