@@ -3,10 +3,13 @@ spring:
     view.prefix: /WEB-INF/jsp/
     view.suffix: .jsp
 
+  data:
+    jpa.repositories.bootstrap-mode: deferred
+
   datasource:
     url: jdbc:postgresql://localhost:5432/pdftodolist
     username: art
-    password: XXX
+    password: art
 
   jpa:
     show-sql: false
