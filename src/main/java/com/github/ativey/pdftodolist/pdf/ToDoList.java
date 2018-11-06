@@ -46,7 +46,8 @@ public class ToDoList {
     //@Autowired
     private PdfFont bodyFont;
 
-    public static PdfFont boldFont;
+    @Autowired
+    public PdfFont boldFont;
 
     public static final String DEFAULT_DEST = "/home/work/Desktop/todo.pdf";
 
@@ -66,12 +67,12 @@ public class ToDoList {
     private CategoryRepository categoryRepository;
 
 
-    @Autowired
-    private String bodyFontName;
+    //@Autowired
+    //private String bodyFontName;
 
 
-    @Autowired
-    private String boldFontName;
+    //@Autowired
+    //private String boldFontName;
 
 private String destination;
 
@@ -211,8 +212,8 @@ private String destination;
     }
 
     public void drawFromList(PdfDocument pdfDoc, List<Pair<PdfColor, ToDoItem>> listOfPairs) throws IOException {
-        System.err.println("bodyFontName is '"+bodyFontName+"'");
-        System.err.println("boldFontName is '"+boldFontName+"'");
+        System.err.println("bodyFontName is '"+bodyFont+"'");
+        System.err.println("boldFontName is '"+boldFont+"'");
 
         int count = 0;
         for (int i = 0; i < 2; i++) {

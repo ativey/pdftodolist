@@ -20,27 +20,27 @@ public class PdfFontConfiguration {
 
     private static final Logger logger = LoggerFactory.getLogger(PdfFontConfiguration.class);
 
-    // First choice user fonts
-    private String bodyFontName = "/fonts/junicode-1.001/Junicode-RegularCondensed.ttf";
-    private String boldFontName = "/fonts/junicode-1.001/Junicode-BoldCondensed.ttf";
+    // Fallback standard fonts
+    private static final String STANDARD_FALLBACK = StandardFonts.HELVETICA;
+    private static final String STANDARD_FALLBACK_BOLD = StandardFonts.HELVETICA_BOLD;
 
     // Second choice application fonts
     private static final String APP_BODY = "/fonts/junicode-1.001/Junicode-RegularCondensed.ttf";
     private static final String APP_BOLD = "/fonts/junicode-1.001/Junicode-BoldCondensed.ttf";
 
-    // Fallback standard fonts
-    private static final String STANDARD_FALLBACK = StandardFonts.HELVETICA;
-    private static final String STANDARD_FALLBACK_BOLD = StandardFonts.HELVETICA_BOLD;
+    // First choice user fonts
+    private String bodyFontName = APP_BODY;
+    private String boldFontName = APP_BOLD;
 
 
     @Bean
     PdfFont bodyFont() {
-        return createFont(bodyFontName, APP_BODY, STANDARD_FALLBACK);
+        return createFont(bodyFontName, STANDARD_FALLBACK);
     }
 
     @Bean
     PdfFont boldFont() {
-        return createFont(boldFontName, APP_BOLD, STANDARD_FALLBACK_BOLD);
+        return createFont(boldFontName, STANDARD_FALLBACK_BOLD);
     }
 
 
@@ -62,17 +62,12 @@ public class PdfFontConfiguration {
         this.boldFontName = boldFontName;
     }
 
+
     // FontMetrics fontMetrics = font.getFontProgram().getFontMetrics();
     // float textHeight = 1000.0f * fontMetrics.getAscender() - fontMetrics.getDescender();
-    public PdfFont createFont(String userFontName, String appFontName, String standardFallback) {
+    private PdfFont createFont(String userFontName, String standardFallback) {
 
         Optional<PdfFont> optional = createFont(userFontName);
-        if (optional.isPresent()) {
-            return optional.get();
-        }
-        logger.warn(String.format("wibble", userFontName));
-
-        optional = createFont(appFontName);
         if (optional.isPresent()) {
             return optional.get();
         }
