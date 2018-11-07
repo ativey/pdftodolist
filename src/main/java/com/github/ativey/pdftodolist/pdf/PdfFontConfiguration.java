@@ -1,5 +1,6 @@
 package com.github.ativey.pdftodolist.pdf;
 
+import com.itextpdf.io.font.FontProgram;
 import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
@@ -9,6 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -23,24 +25,44 @@ public class PdfFontConfiguration {
     // Fallback standard fonts
     private static final String STANDARD_FALLBACK = StandardFonts.HELVETICA;
     private static final String STANDARD_FALLBACK_BOLD = StandardFonts.HELVETICA_BOLD;
+    private static final String STANDARD_FALLBACK_ITALIC = StandardFonts.HELVETICA_OBLIQUE;
+    private static final String STANDARD_FALLBACK_BOLD_ITALIC = StandardFonts.HELVETICA_BOLDOBLIQUE;
 
     // Second choice application fonts
     private static final String APP_BODY = "/fonts/junicode-1.001/Junicode-RegularCondensed.ttf";
     private static final String APP_BOLD = "/fonts/junicode-1.001/Junicode-BoldCondensed.ttf";
+    private static final String APP_ITALIC = "/fonts/junicode-1.001/Junicode-ItalicCondensed.ttf";
+    private static final String APP_BOLD_ITALIC = "/fonts/junicode-1.001/Junicode-BoldItalicCondensed.ttf";
 
     // First choice user fonts
     private String bodyFontName = APP_BODY;
     private String boldFontName = APP_BOLD;
+    private String italicFontName = APP_ITALIC;
+    private String boldItalicFontName = APP_BOLD_ITALIC;
 
 
     @Bean
-    PdfFont bodyFont() {
+    @Scope("prototype")
+    FontProgram bodyFontProgram() {
         return createFont(bodyFontName, STANDARD_FALLBACK);
     }
 
     @Bean
-    PdfFont boldFont() {
+    @Scope("prototype")
+    FontProgram boldFontProgram() {
         return createFont(boldFontName, STANDARD_FALLBACK_BOLD);
+    }
+
+    @Bean
+    @Scope("prototype")
+    FontProgram italicFontProgram() {
+        return createFont(italicFontName, STANDARD_FALLBACK_ITALIC);
+    }
+
+    @Bean
+    @Scope("prototype")
+    FontProgram boldItalicFontProgram() {
+        return createFont(boldItalicFontName, STANDARD_FALLBACK_BOLD_ITALIC);
     }
 
 
@@ -65,11 +87,11 @@ public class PdfFontConfiguration {
 
     // FontMetrics fontMetrics = font.getFontProgram().getFontMetrics();
     // float textHeight = 1000.0f * fontMetrics.getAscender() - fontMetrics.getDescender();
-    private PdfFont createFont(String userFontName, String standardFallback) {
+    private FontProgram createFont(String userFontName, String standardFallback) {
 
         Optional<PdfFont> optional = createFont(userFontName);
         if (optional.isPresent()) {
-            return optional.get();
+            return optional.get().getFontProgram();
         }
         logger.warn(String.format("wibble", userFontName));
 
@@ -77,7 +99,7 @@ public class PdfFontConfiguration {
         if (optional.isEmpty()) {
             logger.warn(String.format("wibble", userFontName));
         }
-        return optional.get();
+        return optional.get().getFontProgram();
     }
 
 

@@ -70,13 +70,10 @@ class PdfController {
 
         ArrayList<Pair<PdfColor, ToDoItem>> list = dbDrivenToDoListGenerator.generateToDoItemList(map, showLabels, completedDisplayStrategy);
 
-        toDoList.createFonts();
+        //toDoList.createFonts();
         toDoList.setDestination("/home/work/Desktop/todo.pdf");
-        PdfDocument pdfDocument = toDoList.setup();
 
-
-        toDoList.drawFromList(pdfDocument, list);
-        pdfDocument.close();
+        toDoList.drawFromList(list);
 
 
         return "index";

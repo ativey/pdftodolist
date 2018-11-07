@@ -7,16 +7,18 @@ public class ToDoItem {
     private boolean box;
     private boolean complete;
     private boolean important;
+    private boolean small;
     private boolean checkBox;
     private Optional<String> boxText;
 
-    public ToDoItem(boolean box, String boxText, boolean checkbox, String name, boolean complete, boolean important) {
+    public ToDoItem(boolean box, String boxText, boolean checkbox, String name, boolean complete, boolean important, boolean small) {
         this.box = box;
         this.boxText = Optional.ofNullable(boxText);
         this.checkBox = checkbox;
         this.name = name;
         this.complete = complete;
         this.important = important;
+        this.small = small;
     }
 
 
@@ -39,6 +41,12 @@ public class ToDoItem {
 
             if (this.name.startsWith("^")) {
                 this.complete = true;
+                this.name = this.name.substring(1);
+                finished = false;
+            }
+
+            if (this.name.startsWith("_")) {
+                this.small = true;
                 this.name = this.name.substring(1);
                 finished = false;
             }
@@ -70,6 +78,10 @@ public class ToDoItem {
 
     public boolean isImportant() {
         return important;
+    }
+
+    public boolean isSmall() {
+        return small;
     }
 
 }

@@ -41,7 +41,7 @@ class DbDrivenToDoListGenerator {
 
             if (showLabels && tasks.size() > 0) {
                 ret.add(Pair.of(map.getOrDefault(category.getName(), SILVER),
-                        new ToDoItem(false, "", false, "  " + category.getName(), false, false)));
+                        new ToDoItem(false, "", false, "  " + category.getName(), false, false, false)));
             }
 
             addToDoToList(ret, tasks, map);
@@ -55,7 +55,7 @@ class DbDrivenToDoListGenerator {
         if (completedDisplayStrategy.displayCompletedAtEndOfList) {
             if (showLabels) {
                 ret.add(Pair.of(map.getOrDefault("Completed", SILVER),
-                        new ToDoItem(false, "", false, "  Completed", false, false)));
+                        new ToDoItem(false, "", false, "  Completed", false, false, false)));
             }
             for (Category category : categories) {
                 var tasks = taskRepository.findTasksByCategoryAndCompleteOrderByDisplayAsc(category, true);
@@ -70,7 +70,7 @@ class DbDrivenToDoListGenerator {
 
     public void addToDoToList(ArrayList<Pair<PdfColor, ToDoItem>> ret, List<Task> tasks, Map<String, PdfColor> map) {
         for (Task task : tasks) {
-            ToDoItem item = new ToDoItem(true, (task.isImportant() ? "  *" : ""), true, " " + task.getName(), task.isComplete(), task.isImportant());
+            ToDoItem item = new ToDoItem(true, (task.isImportant() ? "  *" : "")+(task.isSmall() ? "  '" : ""), true, " " + task.getName(), task.isComplete(), task.isImportant(), task.isSmall());
             ret.add(Pair.of(map.getOrDefault(task.getCategory().getName(), REBECCA_PURPLE), item));
         }
     }

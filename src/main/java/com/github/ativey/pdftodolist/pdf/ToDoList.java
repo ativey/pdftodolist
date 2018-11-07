@@ -3,6 +3,7 @@ package com.github.ativey.pdftodolist.pdf;
 import com.github.ativey.pdftodolist.CategoryRepository;
 import com.github.ativey.pdftodolist.TaskRepository;
 import com.itextpdf.io.font.FontMetrics;
+import com.itextpdf.io.font.FontProgram;
 import com.itextpdf.kernel.colors.Color;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
@@ -13,6 +14,8 @@ import com.itextpdf.kernel.pdf.PdfViewerPreferences;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +33,9 @@ import static com.github.ativey.pdftodolist.pdf.PdfColor.*;
 @Component
 public class ToDoList {
 
+    @Autowired
+    private ApplicationContext applicationContext;
+
 
     final static double MM_TO_POINT = 2.83465;
 
@@ -43,11 +49,17 @@ public class ToDoList {
     // TODO Change transform matrix so item 0 top left
     // TODO Remove all hard-coded constants - mainly small gaps
 
-    //@Autowired
-    private PdfFont bodyFont;
+    @Autowired
+    private FontProgram bodyFontProgram;
 
     @Autowired
-    public PdfFont boldFont;
+    public FontProgram boldFontProgram;
+
+    @Autowired
+    private FontProgram italicFontProgram;
+
+    @Autowired
+    public FontProgram boldItalicFontProgram;
 
     public static final String DEFAULT_DEST = "/home/work/Desktop/todo.pdf";
 
@@ -77,10 +89,10 @@ public class ToDoList {
 private String destination;
 
 
-    public static final String REGULAR =
-            "/fonts/junicode-1.001/Junicode-RegularCondensed.ttf";
-    public static final String BOLD =
-            "/fonts/junicode-1.001/Junicode-BoldCondensed.ttf";
+//    public static final String REGULAR =
+//            "/fonts/junicode-1.001/Junicode-RegularCondensed.ttf";
+//    public static final String BOLD =
+//            "/fonts/junicode-1.001/Junicode-BoldCondensed.ttf";
     //public static final String ITALIC =
      //       "src/main/resources/fonts/Cardo-Italic.ttf";
 
@@ -102,58 +114,56 @@ private String destination;
         this.destination = destination;
     }
 
-    public void createFonts() {
-        try {
-
-//            System.err.println("bodyFont is '"+bodyFont+"'");
-
-//            System.err.println(ToDoList.class);
-//            System.err.println(ToDoList.class.getResourceAsStream(BOLD));
-//            byte[] fontData = ToDoList.class.getResourceAsStream(BOLD).readAllBytes();
-
-
-
-//                    FontProgram fontProgram =
-//                    FontProgramFactory.createFont(REGULAR);
+//    public void createFonts() {
+//        try {
+//
+////            System.err.println("bodyFont is '"+bodyFont+"'");
+//
+////            System.err.println(ToDoList.class);
+////            System.err.println(ToDoList.class.getResourceAsStream(BOLD));
+////            byte[] fontData = ToDoList.class.getResourceAsStream(BOLD).readAllBytes();
 //
 //
-//                    bodyFont = PdfFontFactory.createFont(
-//                    fontProgram, PdfEncodings.WINANSI, true);
-            byte[] fontData = this.getClass().getResourceAsStream(REGULAR).readAllBytes();
-            bodyFont = PdfFontFactory.createFont(fontData, true);
-
-            FontMetrics fontMetrics = bodyFont.getFontProgram().getFontMetrics();
-            float textHeight = 1000.0f * fontMetrics.getAscender() - fontMetrics.getDescender();
-
-
-            //boldFont = PdfFontFactory.createFont(BOLD, true);
-            fontData = this.getClass().getResourceAsStream(BOLD).readAllBytes();
-                    boldFont = PdfFontFactory.createFont(fontData, true);
-            //PdfFont italicFont = PdfFontFactory.createFont(ITALIC, true);
-
-
-
-
-
-
-
-//            bodyFont = PdfFontFactory.createFont(StandardFonts.HELVETICA);
-//            boldFont = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
-        } catch (IOException exp) {
-            exp.printStackTrace();
-        }
-    }
+//
+////                    FontProgram fontProgram =
+////                    FontProgramFactory.createFont(REGULAR);
+////
+////
+////                    bodyFont = PdfFontFactory.createFont(
+////                    fontProgram, PdfEncodings.WINANSI, true);
+//            byte[] fontData = this.getClass().getResourceAsStream(REGULAR).readAllBytes();
+//            bodyFont = PdfFontFactory.createFont(fontData, true);
+//
+//            FontMetrics fontMetrics = bodyFont.getFontProgram().getFontMetrics();
+//            float textHeight = 1000.0f * fontMetrics.getAscender() - fontMetrics.getDescender();
+//
+//
+//            //boldFont = PdfFontFactory.createFont(BOLD, true);
+//            fontData = this.getClass().getResourceAsStream(BOLD).readAllBytes();
+//                    boldFont = PdfFontFactory.createFont(fontData, true);
+//            //PdfFont italicFont = PdfFontFactory.createFont(ITALIC, true);
+//
+//
+//
+//
+//
+//
+//
+////            bodyFont = PdfFontFactory.createFont(StandardFonts.HELVETICA);
+////            boldFont = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
+//        } catch (IOException exp) {
+//            exp.printStackTrace();
+//        }
+//    }
 
     public static void main(String... args) throws IOException {
 
 
         ToDoList toDoList = new ToDoList();
-        toDoList.createFonts();
+        //toDoList.createFonts();
         toDoList.setDestination(DEFAULT_DEST);
-        PdfDocument pdfDocument = toDoList.setup();
 
-        toDoList.drawRandom(pdfDocument);
-        pdfDocument.close();
+        toDoList.drawRandom();
     }
 
     public float transform(float y) {
@@ -161,7 +171,7 @@ private String destination;
     }
 
 
-    public PdfDocument setup() throws IOException {
+    private PdfDocument makePdfDocument() throws IOException {
 
         PdfDocument pdfDoc;
 
@@ -182,7 +192,8 @@ private String destination;
         return pdfDoc;
     }
 
-    private void drawRandom(PdfDocument pdfDoc) throws IOException {
+    private void drawRandom() throws IOException {
+        PdfDocument pdfDoc = makePdfDocument();
         var colours = List.of(RED, BLUE, GREEN, PURPLE, AQUAMARINE, INDIGO);
         var texts = List.of("Earth", "Gallifrey", "Skaro", "Mondas", "Raxacoricofallapatorius");
         Random random = new Random();
@@ -204,16 +215,19 @@ private String destination;
                             random.nextBoolean(),
                             Optional.of(texts.get(count % texts.size())),
                             random.nextBoolean(),
+                            random.nextBoolean(),
                             random.nextBoolean());
                     count++;
                 }
             }
         }
+        pdfDoc.close();
     }
 
-    public void drawFromList(PdfDocument pdfDoc, List<Pair<PdfColor, ToDoItem>> listOfPairs) throws IOException {
-        System.err.println("bodyFontName is '"+bodyFont+"'");
-        System.err.println("boldFontName is '"+boldFont+"'");
+    public void drawFromList(List<Pair<PdfColor, ToDoItem>> listOfPairs) throws IOException {
+        PdfDocument pdfDoc = makePdfDocument();
+        //System.err.println("bodyFontName is '"+bodyFont+"'");
+        //System.err.println("boldFontName is '"+boldFont+"'");
 
         int count = 0;
         for (int i = 0; i < 2; i++) {
@@ -235,18 +249,20 @@ private String destination;
                                 item.isCheckBox(),
                                 Optional.of(item.getName()),
                                 item.isComplete(),
-                                item.isImportant());
+                                item.isImportant(),
+                                item.isSmall());
                     } else {
-                        drawBox(canvas, GRAY.getColour(), xPoints, yPoints, true, Optional.empty(), false, Optional.empty(), false, false);
+                        drawBox(canvas, GRAY.getColour(), xPoints, yPoints, true, Optional.empty(), false, Optional.empty(), false, false, false);
                     }
                     count++;
                 }
             }
         }
+        pdfDoc.close();
     }
 
 
-    void drawBox(PdfCanvas canvas, Color colour, double x, double y, boolean box, Optional<String> boxText, boolean checkbox, Optional<String> text, boolean complete, boolean important) throws IOException {
+    void drawBox(PdfCanvas canvas, Color colour, double x, double y, boolean box, Optional<String> boxText, boolean checkbox, Optional<String> text, boolean complete, boolean important, boolean small) throws IOException {
 
         double effectiveStartX = x + smallGap;
         double effectiveEndX = x + width;
@@ -257,7 +273,7 @@ private String destination;
         canvas.roundRectangle(x, y, width, height, radius);
         canvas.stroke();
         if (box) {
-            drawBox(canvas, colour, x, x + widthOfBox, y, boxText, important);
+            drawBox(canvas, colour, x, x + widthOfBox, y, boxText, important, small);
             effectiveStartX = x + widthOfBox + smallGap;
         }
         if (checkbox) {
@@ -265,12 +281,12 @@ private String destination;
             effectiveEndX = x + width - mmToPoint(5.5);
         }
         if (text.isPresent()) {
-            drawText(canvas, colour, effectiveStartX, effectiveEndX, y, text.get(), 10, complete, important);
+            drawText(canvas, colour, effectiveStartX, effectiveEndX, y, text.get(), 10, complete, important, small);
         }
         canvas.restoreState();
     }
 
-    private void drawText(PdfCanvas canvas, Color colour, double effectiveStartX, double effectiveEndX, double y, String text, int fontSize, boolean complete, boolean important) throws IOException {
+    private void drawText(PdfCanvas canvas, Color colour, double effectiveStartX, double effectiveEndX, double y, String text, int fontSize, boolean complete, boolean important, boolean small) throws IOException {
         canvas.saveState();
         canvas.moveTo(effectiveStartX, y)
                 .lineTo(effectiveEndX, y)
@@ -280,7 +296,20 @@ private String destination;
                 .clip();
         canvas.newPath();
         double yTextOffset = mmToPoint(1.1);
-        PdfFont current = important ? boldFont : bodyFont;
+
+        
+        PdfFont current = PdfFontFactory.createFont(bodyFontProgram);
+        if (important && small) {
+            current = PdfFontFactory.createFont(boldItalicFontProgram);
+        } else {
+            if (important) {
+                current = PdfFontFactory.createFont(boldFontProgram);
+            }
+            if (small) {
+                current = PdfFontFactory.createFont(italicFontProgram);
+            }
+        }
+
         canvas.beginText()
                 .setFontAndSize(current, fontSize)
                 .setColor(colour, true)
@@ -305,7 +334,7 @@ private String destination;
         canvas.restoreState();
     }
 
-    private void drawBox(PdfCanvas canvas, Color colour, double boxFarLeftX, double x, double y, Optional<String> boxText, boolean important) throws IOException {
+    private void drawBox(PdfCanvas canvas, Color colour, double boxFarLeftX, double x, double y, Optional<String> boxText, boolean important, boolean small) throws IOException {
         // FIXME Check join type
 
 
@@ -317,7 +346,7 @@ private String destination;
         canvas.stroke();
 
         if (boxText.isPresent()){
-            drawText(canvas, colour, boxFarLeftX + verySmallGap, x, y, boxText.get(), 9, false, important);
+            drawText(canvas, colour, boxFarLeftX + verySmallGap, x, y, boxText.get(), 9, false, important, small);
         }
     }
 

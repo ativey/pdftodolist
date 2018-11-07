@@ -1,9 +1,13 @@
 package com.github.ativey.pdftodolist.pdf;
 
+import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfViewerPreferences;
+import com.itextpdf.kernel.pdf.PdfWriter;
 import org.springframework.data.util.Pair;
 import org.springframework.util.ReflectionUtils;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -29,15 +33,13 @@ public class ColorChart {
 
         ToDoList toDoList = new ToDoList();
         toDoList.setDestination(DEST);
-        PdfDocument pdfDocument = toDoList.setup();
 
-        var list = getCssColours(pdfDocument);
-        toDoList.drawFromList(pdfDocument, list);
-        pdfDocument.close();
+        var list = getCssColours();
+        toDoList.drawFromList(list);
     }
 
 
-    static private List<Pair<PdfColor, ToDoItem>> getCssColours(PdfDocument pdfDoc) throws IOException {
+    static private List<Pair<PdfColor, ToDoItem>> getCssColours() throws IOException {
 
 
         Set<String> endOfBlock = Set.of("DARK_RED", "DARK_ORANGE", "YELLOW", "OLIVE_DRAB", "TEAL", "DARK_SLATE_BLUE", "INDIGO", "MEDIUM_VIOLET_RED", "MISTY_ROSE", "BLACK");
@@ -56,11 +58,11 @@ public class ColorChart {
                 String name = field.getName();
                 String description = String.format("#%s %s", colour.getHexString(), name);
                 //System.err.println(description);
-                ToDoItem item = new ToDoItem(false, "", true, description, false, false);
+                ToDoItem item = new ToDoItem(false, "", true, description, false, false, false);
                 list.add(Pair.of(colour, item));
                 colorCount[0]++;
                 if (endOfBlock.contains(name)) {
-                    list.add(Pair.of(WHITE, new ToDoItem(false, "", true, " ", false, false)));
+                    list.add(Pair.of(WHITE, new ToDoItem(false, "", true, " ", false, false, false)));
                 }
             }
         });

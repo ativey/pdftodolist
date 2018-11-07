@@ -26,6 +26,8 @@ public class Task {
 
     private boolean complete = false;
 
+    private boolean small = false;
+
     @Column(unique = true)
     private int display;
 
@@ -51,11 +53,12 @@ public class Task {
         // For JPA
     }
 
-    public Task(@Size(min = 1, max = 80) String name, Category category, boolean important, boolean complete, int display) {
+    public Task(@Size(min = 1, max = 80) String name, Category category, boolean important, boolean complete, boolean small, int display) {
         this.name = name;
         this.category = category;
         this.important = important;
         this.complete = complete;
+        this.small = small;
         this.display = display;
         this.creationDate = Instant.now();
     }
@@ -87,6 +90,10 @@ public class Task {
 
     public boolean isComplete() {
         return complete;
+    }
+
+    public boolean isSmall() {
+        return small;
     }
 
 //    public void setCreationDate(Instant creationDate) {
