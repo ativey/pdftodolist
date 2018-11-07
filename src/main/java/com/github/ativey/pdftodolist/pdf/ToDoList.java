@@ -230,34 +230,41 @@ private String destination;
         //System.err.println("boldFontName is '"+boldFont+"'");
 
         int count = 0;
-        for (int i = 0; i < 2; i++) {
-            final PdfPage page = pdfDoc.addNewPage();
-            PdfCanvas canvas = new PdfCanvas(page);
-            for (int x = 0; x < 5; x++) {
-                for (int y = 1; y < 27; y++) {
-                    float xPoints = x * xOffset + page_x_border;
-                    float yPoints = transform(y * yOffset + page_y_border);
-                    if (count < listOfPairs.size()) {
+        int pageCount=0;
+        boolean completed = false;
+        //for (int i = 0; i < 2; i++) {
+        do {
+            do {
+                final PdfPage page = pdfDoc.addNewPage();
+                pageCount++;
+                PdfCanvas canvas = new PdfCanvas(page);
+                for (int x = 0; x < 5; x++) {
+                    for (int y = 1; y < 27; y++) {
+                        float xPoints = x * xOffset + page_x_border;
+                        float yPoints = transform(y * yOffset + page_y_border);
+                        if (count < listOfPairs.size()) {
 
-                        ToDoItem item = listOfPairs.get(count).getSecond();
-                        drawBox(canvas,
-                                listOfPairs.get(count).getFirst().getColour(),
-                                xPoints,
-                                yPoints,
-                                item.isBox(),
-                                item.getBoxText(),
-                                item.isCheckBox(),
-                                Optional.of(item.getName()),
-                                item.isComplete(),
-                                item.isImportant(),
-                                item.isSmall());
-                    } else {
-                        drawBox(canvas, GRAY.getColour(), xPoints, yPoints, true, Optional.empty(), false, Optional.empty(), false, false, false);
+                            ToDoItem item = listOfPairs.get(count).getSecond();
+                            drawBox(canvas,
+                                    listOfPairs.get(count).getFirst().getColour(),
+                                    xPoints,
+                                    yPoints,
+                                    item.isBox(),
+                                    item.getBoxText(),
+                                    item.isCheckBox(),
+                                    Optional.of(item.getName()),
+                                    item.isComplete(),
+                                    item.isImportant(),
+                                    item.isSmall());
+                        } else {
+                            completed = true;
+                            drawBox(canvas, GRAY.getColour(), xPoints, yPoints, true, Optional.empty(), false, Optional.empty(), false, false, false);
+                        }
+                        count++;
                     }
-                    count++;
                 }
-            }
-        }
+            } while (!completed);
+        } while ((pageCount % 2) == 1);
         pdfDoc.close();
     }
 
@@ -297,16 +304,16 @@ private String destination;
         canvas.newPath();
         double yTextOffset = mmToPoint(1.1);
 
-        
-        PdfFont current = PdfFontFactory.createFont(bodyFontProgram);
+        String encoding = null;
+        PdfFont current = PdfFontFactory.createFont(bodyFontProgram, encoding, true);
         if (important && small) {
-            current = PdfFontFactory.createFont(boldItalicFontProgram);
+            current = PdfFontFactory.createFont(boldItalicFontProgram, encoding, true);
         } else {
             if (important) {
-                current = PdfFontFactory.createFont(boldFontProgram);
+                current = PdfFontFactory.createFont(boldFontProgram, encoding, true);
             }
             if (small) {
-                current = PdfFontFactory.createFont(italicFontProgram);
+                current = PdfFontFactory.createFont(italicFontProgram, encoding, true);
             }
         }
 
