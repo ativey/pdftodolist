@@ -171,6 +171,25 @@ private String destination;
     }
 
 
+    class FontHolder {
+        PdfFont bodyFont;
+        PdfFont boldItalicFont;
+        PdfFont boldFont;
+        PdfFont italicFont;
+
+        FontHolder() {
+            String encoding = null;
+            bodyFont = PdfFontFactory.createFont(bodyFontProgram, encoding, true);
+            boldItalicFont = PdfFontFactory.createFont(boldItalicFontProgram, encoding, true);
+            boldFont = PdfFontFactory.createFont(boldFontProgram, encoding, true);
+            italicFont = PdfFontFactory.createFont(italicFontProgram, encoding, true);
+        }
+
+
+
+    }
+
+
     private PdfDocument makePdfDocument() throws IOException {
 
         PdfDocument pdfDoc;
@@ -192,8 +211,10 @@ private String destination;
         return pdfDoc;
     }
 
+
     private void drawRandom() throws IOException {
         PdfDocument pdfDoc = makePdfDocument();
+        FontHolder fontHolder = new FontHolder();
         var colours = List.of(RED, BLUE, GREEN, PURPLE, AQUAMARINE, INDIGO);
         var texts = List.of("Earth", "Gallifrey", "Skaro", "Mondas", "Raxacoricofallapatorius");
         Random random = new Random();
@@ -207,6 +228,7 @@ private String destination;
                     float xPoints = x * xOffset + page_x_border;
                     float yPoints = transform(y * yOffset + page_y_border);
                     drawBox(canvas,
+                            fontHolder,
                             colours.get(random.nextInt(colours.size() - 1)).getColour(),
                             xPoints,
                             yPoints,
@@ -226,6 +248,7 @@ private String destination;
 
     public void drawFromList(List<Pair<PdfColor, ToDoItem>> listOfPairs) throws IOException {
         PdfDocument pdfDoc = makePdfDocument();
+        FontHolder fontHolder = new FontHolder();
         //System.err.println("bodyFontName is '"+bodyFont+"'");
         //System.err.println("boldFontName is '"+boldFont+"'");
 
@@ -246,6 +269,7 @@ private String destination;
 
                             ToDoItem item = listOfPairs.get(count).getSecond();
                             drawBox(canvas,
+                                    fontHolder,
                                     listOfPairs.get(count).getFirst().getColour(),
                                     xPoints,
                                     yPoints,
@@ -258,7 +282,7 @@ private String destination;
                                     item.isSmall());
                         } else {
                             completed = true;
-                            drawBox(canvas, GRAY.getColour(), xPoints, yPoints, true, Optional.empty(), false, Optional.empty(), false, false, false);
+                            drawBox(canvas, fontHolder, GRAY.getColour(), xPoints, yPoints, true, Optional.empty(), false, Optional.empty(), false, false, false);
                         }
                         count++;
                     }
@@ -269,7 +293,7 @@ private String destination;
     }
 
 
-    void drawBox(PdfCanvas canvas, Color colour, double x, double y, boolean box, Optional<String> boxText, boolean checkbox, Optional<String> text, boolean complete, boolean important, boolean small) throws IOException {
+    void drawBox(PdfCanvas canvas, FontHolder fontHolder, Color colour, double x, double y, boolean box, Optional<String> boxText, boolean checkbox, Optional<String> text, boolean complete, boolean important, boolean small) throws IOException {
 
         double effectiveStartX = x + smallGap;
         double effectiveEndX = x + width;
@@ -280,7 +304,7 @@ private String destination;
         canvas.roundRectangle(x, y, width, height, radius);
         canvas.stroke();
         if (box) {
-            drawBox(canvas, colour, x, x + widthOfBox, y, boxText, important, small);
+            drawBox(canvas, fontHolder, colour, x, x + widthOfBox, y, boxText, important, small);
             effectiveStartX = x + widthOfBox + smallGap;
         }
         if (checkbox) {
@@ -288,12 +312,12 @@ private String destination;
             effectiveEndX = x + width - mmToPoint(5.5);
         }
         if (text.isPresent()) {
-            drawText(canvas, colour, effectiveStartX, effectiveEndX, y, text.get(), 10, complete, important, small);
+            drawText(canvas, fontHolder, colour, effectiveStartX, effectiveEndX, y, text.get(), 10, complete, important, small);
         }
         canvas.restoreState();
     }
 
-    private void drawText(PdfCanvas canvas, Color colour, double effectiveStartX, double effectiveEndX, double y, String text, int fontSize, boolean complete, boolean important, boolean small) throws IOException {
+    private void drawText(PdfCanvas canvas, FontHolder fontHolder, Color colour, double effectiveStartX, double effectiveEndX, double y, String text, int fontSize, boolean complete, boolean important, boolean small) throws IOException {
         canvas.saveState();
         canvas.moveTo(effectiveStartX, y)
                 .lineTo(effectiveEndX, y)
@@ -305,15 +329,15 @@ private String destination;
         double yTextOffset = mmToPoint(1.1);
 
         String encoding = null;
-        PdfFont current = PdfFontFactory.createFont(bodyFontProgram, encoding, true);
+        PdfFont current = fontHolder.bodyFont;
         if (important && small) {
-            current = PdfFontFactory.createFont(boldItalicFontProgram, encoding, true);
+            current = fontHolder.boldItalicFont;
         } else {
             if (important) {
-                current = PdfFontFactory.createFont(boldFontProgram, encoding, true);
+                current = fontHolder.boldFont;
             }
             if (small) {
-                current = PdfFontFactory.createFont(italicFontProgram, encoding, true);
+                current = fontHolder.italicFont;
             }
         }
 
@@ -341,7 +365,7 @@ private String destination;
         canvas.restoreState();
     }
 
-    private void drawBox(PdfCanvas canvas, Color colour, double boxFarLeftX, double x, double y, Optional<String> boxText, boolean important, boolean small) throws IOException {
+    private void drawBox(PdfCanvas canvas, FontHolder fontHolder, Color colour, double boxFarLeftX, double x, double y, Optional<String> boxText, boolean important, boolean small) throws IOException {
         // FIXME Check join type
 
 
@@ -353,7 +377,7 @@ private String destination;
         canvas.stroke();
 
         if (boxText.isPresent()){
-            drawText(canvas, colour, boxFarLeftX + verySmallGap, x, y, boxText.get(), 9, false, important, small);
+            drawText(canvas, fontHolder, colour, boxFarLeftX + verySmallGap, x, y, boxText.get(), 9, false, important, small);
         }
     }
 
